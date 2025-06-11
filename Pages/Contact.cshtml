@@ -1,0 +1,99 @@
+@page
+@model PortfolioApp.Pages.ContactModel
+@{
+    ViewData["Title"] = "İletişim";
+}
+
+<!-- Page Header -->
+<section class="py-5 bg-light">
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="fw-bold">İletişime Geçin</h1>
+                <p class="lead text-muted">Bana ulaşmak için aşağıdaki formu doldurabilir veya doğrudan iletişim bilgilerimden bana ulaşabilirsiniz.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Form -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 p-md-5">
+                        <form id="contactForm" method="post">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">Adınız</label>
+                                    <input type="text" class="form-control" id="name" name="Name" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">E-posta Adresiniz</label>
+                                    <input type="email" class="form-control" id="email" name="Email" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Konu</label>
+                                <input type="text" class="form-control" id="subject" name="Subject" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="message" class="form-label">Mesajınız</label>
+                                <textarea class="form-control" id="message" name="Message" rows="5" required></textarea>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">Gönder</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Info -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100">
+                    <div class="icon-box bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                        <i class="bi bi-geo-alt fs-3"></i>
+                    </div>
+                    <h5 class="h5 mb-2">Adres</h5>
+                    <p class="text-muted mb-0">1234 Sokak, No:1<br>İstanbul, Türkiye</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100">
+                    <div class="icon-box bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                        <i class="bi bi-envelope fs-3"></i>
+                    </div>
+                    <h5 class="h5 mb-2">E-posta</h5>
+                    <p class="text-muted mb-0">email@example.com<br>info@example.com</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center p-4 bg-white rounded-3 shadow-sm h-100">
+                    <div class="icon-box bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                        <i class="bi bi-telephone fs-3"></i>
+                    </div>
+                    <h5 class="h5 mb-2">Telefon</h5>
+                    <p class="text-muted mb-0">+90 555 123 45 67<br>+90 212 123 45 67</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map -->
+<section class="py-5">
+    <div class="container">
+        <div class="ratio ratio-21x9 rounded-3 overflow-hidden shadow-sm">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3010.279637020392!2d28.978358699999998!3d41.0082376!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cab9eb9d587135%3A0x8aa0bb6b1dd6ffb7!2zRW1pxZ9uae2XnQ!5e0!3m2!1str!2str!4v1620000000000!5m2!1str!2str" 
+                    style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+    </div>
+</section>

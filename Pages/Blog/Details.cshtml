@@ -1,0 +1,152 @@
+@page "{slug}"
+@model PortfolioApp.Pages.Blog.DetailsModel
+@{
+    ViewData["Title"] = Model.BlogPost?.Title ?? "Blog Post";
+    ViewData["Description"] = Model.BlogPost?.Summary;
+    ViewData["Image"] = Model.BlogPost?.ImageUrl;
+}
+
+@if (Model.BlogPost == null)
+{
+    <div class="container py-5">
+        <div class="text-center">
+            <h1 class="display-4">Post Not Found</h1>
+            <p class="lead">The requested blog post could not be found.</p>
+            <a href="/blog" class="btn btn-primary mt-3">
+                <i class="bi bi-arrow-left me-1"></i> Back to Blog
+            </a>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Page Header -->
+    <header class="bg-light py-5 mb-5">
+        <div class="container px-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-xxl-6">
+                    <div class="text-center my-5">
+                        <h1 class="fw-bolder mb-3">@Model.BlogPost.Title</h1>
+                        <p class="lead fw-normal text-muted mb-4">
+                            <i class="bi bi-calendar3 me-2"></i> 
+                            @Model.BlogPost.CreatedAt.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))
+                            
+                            @if (Model.BlogPost.Tags != null && Model.BlogPost.Tags.Any())
+                            {
+                                <span class="ms-3">
+                                    <i class="bi bi-tags me-2"></i>
+                                    @string.Join(", ", Model.BlogPost.Tags.Take(3))
+                                    @if (Model.BlogPost.Tags.Count > 3)
+                                    {
+                                        <span>+@(Model.BlogPost.Tags.Count - 3) more</span>
+                                    }
+                                </span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Blog Post Content -->
+    <section class="py-5">
+        <div class="container px-5">
+            <div class="row gx-5 justify-content-center">
+                <div class="col-lg-8">
+                    <!-- Featured Image -->
+                    @if (!string.IsNullOrEmpty(Model.BlogPost.ImageUrl))
+                    {
+                        <div class="mb-5">
+                            <img class="img-fluid rounded-3" src="@Model.BlogPost.ImageUrl" alt="@Model.BlogPost.Title" />
+                        </div>
+                    }
+
+                    <!-- Blog Content -->
+                    <article class="blog-post">
+                        @if (!string.IsNullOrEmpty(Model.BlogPost.Summary))
+                        {
+                            <div class="lead mb-4">@Model.BlogPost.Summary</div>
+                        }
+                        
+                        <div class="blog-content">
+                            @Html.Raw(Markdig.Markdown.ToHtml(Model.BlogPost.Content ?? string.Empty))
+                        </div>
+                    </article>
+
+                    <!-- Back to Blog -->
+                    <div class="mt-5 text-center">
+                        <a href="/blog" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left me-1"></i> Back to Blog
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Posts -->
+    @if (Model.RelatedPosts != null && Model.RelatedPosts.Any())
+    {
+        <section class="py-5 bg-light">
+            <div class="container px-5">
+                <h2 class="h4 fw-bolder mb-4">Related Posts</h2>
+                <div class="row gx-5">
+                    @foreach (var post in Model.RelatedPosts)
+                    {
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                @if (!string.IsNullOrEmpty(post.ImageUrl))
+                                {
+                                    <img src="@post.ImageUrl" class="card-img-top" alt="@post.Title">
+                                }
+                                <div class="card-body">
+                                    <h3 class="h5 card-title">
+                                        <a href="/blog/@post.Slug" class="text-decoration-none text-dark">
+                                            @post.Title
+                                        </a>
+                                    </h3>
+                                    <p class="card-text text-muted small">
+                                        <i class="bi bi-calendar3 me-1"></i> 
+                                        @post.CreatedAt.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))
+                                    </p>
+                                    @if (!string.IsNullOrEmpty(post.Summary))
+                                    {
+                                        <p class="card-text">
+                                            @(post.Summary.Length > 100 ? post.Summary.Substring(0, 100) + "..." : post.Summary)
+                                        </p>
+                                    }
+                                </div>
+                                <div class="card-footer bg-transparent border-top-0">
+                                    <a href="/blog/@post.Slug" class="btn btn-sm btn-outline-primary">
+                                        Read More <i class="bi bi-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    <!-- Call to Action -->
+    <section class="py-5 bg-primary text-white">
+        <div class="container px-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="h3 mb-4">Enjoyed this article?</h2>
+                    <p class="lead mb-4">Subscribe to my newsletter to get notified about new content and updates.</p>
+                    <form class="row g-3 justify-content-center">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="email" class="form-control" placeholder="Your email address" aria-label="Your email address">
+                                <button class="btn btn-dark" type="submit">Subscribe</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+}

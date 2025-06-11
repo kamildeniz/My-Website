@@ -1,0 +1,170 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<!-- Hero Section -->
+<section class="hero-section py-5">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-3">Merhaba, Ben <span class="text-primary">Kamil Deniz</span></h1>
+                <p class="lead mb-4">Junior Yazılım Geliştirici</p>
+                <p class="mb-4">Yazılım dünyasında kendimi sürekli geliştirmeye ve yeni teknolojiler öğrenmeye tutkulu bir yazılım geliştiriciyim. Temiz kod yazmaya ve kullanıcı dostu uygulamalar geliştirmeye özen gösteriyorum.</p>
+                <div class="d-flex gap-3">
+                    <a href="/About" class="btn btn-primary btn-lg">Hakkımda</a>
+                    <a href="/Projects" class="btn btn-outline-primary btn-lg">Projelerim</a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center mt-5 mt-lg-0">
+                <div class="profile-image-container mx-auto">
+                    <img src="/images/profile-placeholder.jpg" alt="Kamil Deniz" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Yeteneklerim</h2>
+            <p class="text-muted">Geliştirme süreçlerinde kullandığım teknolojiler</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                            <i class="bi bi-code-slash fs-3"></i>
+                        </div>
+                        <h5 class="card-title">Web Geliştirme</h5>
+                        <p class="card-text text-muted">ASP.NET Core, JavaScript, HTML5, CSS3, React</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                            <i class="bi bi-database fs-3"></i>
+                        </div>
+                        <h5 class="card-title">Veritabanı</h5>
+                        <p class="card-text text-muted">SQL Server, SQLite, Entity Framework Core, Dapper</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                            <i class="bi bi-tools fs-3"></i>
+                        </div>
+                        <h5 class="card-title">Araçlar</h5>
+                        <p class="card-text text-muted">Git, Docker, Azure, Visual Studio, VS Code</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Latest Projects Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Son Projelerim</h2>
+            <p class="text-muted">Yakın zamanda tamamladığım çalışmalardan örnekler</p>
+            <a href="/Projects" class="btn btn-outline-primary mt-2">Tüm Projeleri Gör</a>
+        </div>
+        <!-- Projects will be loaded here dynamically -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="projects-container">
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="https://via.placeholder.com/400x250" class="card-img-top" alt="Proje 1">
+                    <div class="card-body">
+                        <h5 class="card-title">Proje Başlığı</h5>
+                        <p class="card-text text-muted">Proje açıklaması buraya gelecek. Kısa ve öz bir açıklama yazılabilir.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="#" class="btn btn-sm btn-outline-primary">Detaylar</a>
+                            <small class="text-muted">Haziran 2025</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- More project cards will be added dynamically -->
+        </div>
+    </div>
+</section>
+
+<!-- Latest Blog Posts Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Son Blog Yazılarım</h2>
+            <p class="text-muted">Teknoloji ve yazılım dünyasından güncel paylaşımlar</p>
+            <a href="/Blog" class="btn btn-outline-primary mt-2">Tüm Yazıları Oku</a>
+        </div>
+        <!-- Blog posts will be loaded here dynamically -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="blog-posts-container">
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="https://via.placeholder.com/400x250" class="card-img-top" alt="Blog Post 1">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="badge bg-primary">Teknoloji</span>
+                            <small class="text-muted">10 Haziran 2025</small>
+                        </div>
+                        <h5 class="card-title">Blog Yazı Başlığı</h5>
+                        <p class="card-text text-muted">Blog yazısının kısa bir özeti burada yer alacak. İlk birkaç cümle gösterilebilir.</p>
+                        <a href="#" class="stretched-link">Devamını oku</a>
+                    </div>
+                </div>
+            </div>
+            <!-- More blog post cards will be added dynamically -->
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 bg-light">
+    <div class="container text-center py-4">
+        <h2 class="fw-bold mb-4">İletişime Geçin</h2>
+        <p class="lead mb-4">Yeni fırsatlar ve işbirlikleri için benimle iletişime geçebilirsiniz.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="/Contact" class="btn btn-primary btn-lg">
+                <i class="bi bi-envelope me-2"></i>Mesaj Gönder
+            </a>
+            <a href="https://www.linkedin.com/in/kamil-deniz/" target="_blank" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-linkedin me-2"></i>LinkedIn
+            </a>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        .profile-image-container {
+            width: 300px;
+            height: 300px;
+            overflow: hidden;
+            border: 5px solid #fff;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+        }
+        .icon-box {
+            margin: 0 auto;
+        }
+    </style>
+}

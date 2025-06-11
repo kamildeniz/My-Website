@@ -1,0 +1,197 @@
+@page
+@model PortfolioApp.Pages.AboutModel
+@{
+    ViewData["Title"] = "Hakkımda";
+}
+
+<!-- Page Header -->
+<section class="py-5 bg-light">
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="fw-bold">Hakkımda</h1>
+                <p class="lead text-muted">Kendimi tanıtayım ve yeteneklerimden bahsedeyim</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="p-3 p-lg-5">
+                    <h2 class="h3 mb-4">Merhaba, ben Kamil Deniz</h2>
+                    <p class="lead">Junior Full Stack Developer</p>
+                    <p>Yazılım geliştirme dünyasına olan tutkum ve sürekli öğrenme isteğimle kendimi bu alanda geliştirmeye devam ediyorum. Özellikle web teknolojileri ve yazılım geliştirme konularına büyük bir ilgi duyuyorum.</p>
+                    <p>Bu süreçte edindiğim bilgi ve deneyimleri bu web sitesi aracılığıyla paylaşmayı hedefliyorum. Aynı zamanda yeni projeler geliştirerek kendimi sürekli geliştirmeye çalışıyorum.</p>
+                    <div class="mt-4">
+                        <a href="/contact" class="btn btn-primary me-2">
+                            <i class="bi bi-envelope me-2"></i>İletişime Geç
+                        </a>
+                        <a href="/projects" class="btn btn-outline-primary">
+                            <i class="bi bi-code-square me-2"></i>Projelerimi Gör
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="p-3">
+                    <img src="/images/profile-placeholder.jpg" alt="Profil Resmi" class="img-fluid rounded-3 shadow">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Teknik Yeteneklerim</h2>
+            <p class="text-muted">Geliştirme süreçlerinde kullandığım teknolojiler ve yetkinlik seviyelerim</p>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="skill-item mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>HTML5 & CSS3</span>
+                        <span>85%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="skill-item mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>JavaScript</span>
+                        <span>75%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="skill-item mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>ASP.NET Core</span>
+                        <span>80%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="skill-item mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Entity Framework Core</span>
+                        <span>75%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="skill-item mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>SQL Server</span>
+                        <span>70%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="skill-item mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Git & GitHub</span>
+                        <span>80%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                            <i class="bi bi-code-slash fs-3"></i>
+                        </div>
+                        <h5 class="card-title">Web Geliştirme</h5>
+                        <p class="card-text text-muted">ASP.NET Core, JavaScript, HTML5, CSS3, React</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                            <i class="bi bi-database fs-3"></i>
+                        </div>
+                        <h5 class="card-title">Veritabanı</h5>
+                        <p class="card-text text-muted">SQL Server, SQLite, Entity Framework Core, Dapper</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                            <i class="bi bi-tools fs-3"></i>
+                        </div>
+                        <h5 class="card-title">Araçlar</h5>
+                        <p class="card-text text-muted">Git, Docker, Azure DevOps, Visual Studio, VS Code</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Experience Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Eğitim ve Deneyimlerim</h2>
+            <p class="text-muted">Öğrenme yolculuğum ve profesyonel deneyimlerim</p>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-icon bg-primary text-white">
+                    <i class="bi bi-mortarboard"></i>
+                </div>
+                <div class="timeline-content">
+                    <h5>Bilgisayar Mühendisliği Öğrencisi</h5>
+                    <h6>Üniversite | 2021 - Devam Ediyor</h6>
+                    <p>Bilgisayar bilimlerinin temelleri, veri yapıları, algoritmalar ve yazılım mühendisliği prensipleri üzerine eğitim alıyorum.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-icon bg-success text-white">
+                    <i class="bi bi-code-slash"></i>
+                </div>
+                <div class="timeline-content">
+                    <h5>Stajyer Yazılım Geliştirici</h5>
+                    <h6>Şirket Adı | 2023 - 2023</h6>
+                    <ul>
+                        <li>ASP.NET Core ve Entity Framework kullanarak web uygulamaları geliştirdim</li>
+                        <li>Takım projelerinde yer alarak ekip çalışması deneyimi kazandım</li>
+                        <li>Kod incelemelerine katılarak kaliteli yazılım geliştirme süreçlerini öğrendim</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-icon bg-info text-white">
+                    <i class="bi bi-laptop"></i>
+                </div>
+                <div class="timeline-content">
+                    <h5>Kişisel Projeler</h5>
+                    <h6>2021 - Günümüz</h6>
+                    <p>Öğrendiğim teknolojileri pekiştirmek ve portföy oluşturmak amacıyla çeşitli kişisel projeler geliştiriyorum. Bu projeleri <a href="/Projects">Projeler</a> sayfasından inceleyebilirsiniz.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
