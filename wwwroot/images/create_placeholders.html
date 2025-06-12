@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Placeholder Images</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .placeholder {
+            width: 400px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Placeholder Images</h1>
+    <p>Right-click on each image and select "Save image as..." to save them to your computer.</p>
+    
+    <div class="placeholder" style="background: linear-gradient(135deg, #6e8efb, #a777e3);" id="eticaret">
+        E-Ticaret API
+    </div>
+    
+    <div class="placeholder" style="background: linear-gradient(135deg, #2ecc71, #27ae60);" id="library">
+        Kütüphane Yönetim Sistemi
+    </div>
+    
+    <div class="placeholder" style="background: linear-gradient(135deg, #e74c3c, #c0392b);" id="nlayered">
+        Katmanlı Mimari Demo
+    </div>
+    
+    <div class="placeholder" style="background: linear-gradient(135deg, #f39c12, #d35400);" id="nlayer">
+        N-Katmanlı Uygulama
+    </div>
+    
+    <div class="placeholder" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);" id="personal">
+        Kişisel Web Sitesi
+    </div>
+    
+    <script>
+        // Convert divs to images
+        document.addEventListener('DOMContentLoaded', function() {
+            const placeholders = document.querySelectorAll('.placeholder');
+            
+            placeholders.forEach((div, index) => {
+                // Create a canvas element
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Set canvas size
+                canvas.width = 800;
+                canvas.height = 500;
+                
+                // Get computed styles
+                const styles = window.getComputedStyle(div);
+                
+                // Draw background
+                ctx.fillStyle = styles.background;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw text
+                ctx.fillStyle = styles.color;
+                ctx.font = 'bold 40px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                // Split text into multiple lines if needed
+                const text = div.textContent.trim();
+                const maxWidth = 700;
+                const lineHeight = 50;
+                const x = canvas.width / 2;
+                let y = canvas.height / 2 - (text.split(' ').length - 1) * lineHeight / 2;
+                
+                const words = text.split(' ');
+                let line = '';
+                
+                for (let n = 0; n < words.length; n++) {
+                    const testLine = line + words[n] + ' ';
+                    const metrics = ctx.measureText(testLine);
+                    const testWidth = metrics.width;
+                    
+                    if (testWidth > maxWidth && n > 0) {
+                        ctx.fillText(line, x, y);
+                        line = words[n] + ' ';
+                        y += lineHeight;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                ctx.fillText(line, x, y);
+                
+                // Replace div with image
+                const dataURL = canvas.toDataURL('image/jpeg');
+                const img = new Image();
+                img.src = dataURL;
+                img.style.width = '100%';
+                img.style.maxWidth = '400px';
+                img.style.height = 'auto';
+                img.style.borderRadius = '8px';
+                
+                div.innerHTML = '';
+                div.appendChild(img);
+                
+                // Add download link
+                const link = document.createElement('a');
+                link.href = dataURL;
+                link.download = div.id + '.jpg';
+                link.textContent = 'Download ' + div.id + '.jpg';
+                link.style.display = 'block';
+                link.style.marginTop: '10px';
+                
+                div.parentNode.insertBefore(link, div.nextSibling);
+            });
+        });
+    </script>
+</body>
+</html>
