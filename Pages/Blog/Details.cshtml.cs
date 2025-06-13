@@ -26,9 +26,9 @@ namespace PortfolioApp.Pages.Blog
             _blogService = blogService;
         }
 
-        public BlogPost BlogPost { get; set; }
+        public BlogPost? BlogPost { get; set; }
         public List<BlogPost> RelatedPosts { get; set; } = new();
-        public string HtmlContent { get; set; }
+        public string? HtmlContent { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string slug)
         {

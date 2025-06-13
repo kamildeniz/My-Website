@@ -1,0 +1,108 @@
+@page
+@model PortfolioApp.Pages.Admin.Posts.CreateModel
+@{
+    ViewData["Title"] = "Yeni Blog Yazısı";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+    <h1 class="h2">Yeni Blog Yazısı</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a asp-page="Index" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Listeye Dön
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="mb-3">
+                <label asp-for="BlogPost.Title" class="form-label">Başlık</label>
+                <input asp-for="BlogPost.Title" class="form-control" />
+                <span asp-validation-for="BlogPost.Title" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="BlogPost.Slug" class="form-label">URL Yolu (Boş bırakılırsa otomatik oluşturulur)</label>
+                <input asp-for="BlogPost.Slug" class="form-control" />
+                <span asp-validation-for="BlogPost.Slug" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="BlogPost.Excerpt" class="form-label">Özet</label>
+                <textarea asp-for="BlogPost.Excerpt" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="BlogPost.Excerpt" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="BlogPost.Content" class="form-label">İçerik (Markdown)</label>
+                <textarea asp-for="BlogPost.Content" class="form-control" rows="10"></textarea>
+                <span asp-validation-for="BlogPost.Content" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="BlogPost.Tags" class="form-label">Etiketler (virgülle ayırın)</label>
+                <input asp-for="BlogPost.Tags" class="form-control" />
+                <span asp-validation-for="BlogPost.Tags" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <div class="form-check">
+                    <input asp-for="BlogPost.IsPublished" class="form-check-input" />
+                    <label asp-for="BlogPost.IsPublished" class="form-check-label">Yayınla</label>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Kaydet
+                </button>
+                <a asp-page="Index" class="btn btn-secondary">İptal</a>
+            </div>
+        </form>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Yardım</h5>
+            </div>
+            <div class="card-body">
+                <h6>Markdown Kullanımı</h6>
+                <ul class="small">
+                    <li><code># Başlık</code> - Başlık</li>
+                    <li><code>## Alt Başlık</code> - Alt başlık</li>
+                    <li><code>**kalın**</code> - <strong>kalın</strong></li>
+                    <li><code>*italik*</code> - <em>italik</em></li>
+                    <li><code>- Madde işareti</code> - Liste öğesi</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Generate slug from title
+        document.getElementById('BlogPost_Title').addEventListener('blur', function() {
+            const title = this.value;
+            const slugInput = document.getElementById('BlogPost_Slug');
+            
+            if (!slugInput.value) {
+                // Generate slug from title
+                const slug = title
+                    .toLowerCase()
+                    .replace(/[^\w\s-]/g, '') // Remove special chars
+                    .replace(/\s+/g, '-')     // Replace spaces with -
+                    .replace(/--+/g, '-')     // Replace multiple - with single -
+                    .trim();
+                
+                slugInput.value = slug;
+            }
+        });
+    </script>
+}

@@ -1,0 +1,59 @@
+@page
+@model PortfolioApp.Pages.Admin.Posts.IndexModel
+@{
+    ViewData["Title"] = "Blog Yazıları";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Blog Yazıları</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a asp-page="Create" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-plus-circle"></i> Yeni Yazı Ekle
+        </a>
+    </div>
+</div>
+
+@if (Model.BlogPosts.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Başlık</th>
+                    <th>Yazar</th>
+                    <th>Oluşturulma Tarihi</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var post in Model.BlogPosts)
+                {
+                    <tr>
+                        <td>@post.Title</td>
+                        <td>@post.Author</td>
+                        <td>@post.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a asp-page="/Blog/Details" asp-route-slug="@post.Slug" class="btn btn-outline-primary" target="_blank">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a asp-page="Edit" asp-route-id="@post.Id" class="btn btn-outline-secondary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a asp-page="Delete" asp-route-id="@post.Id" class="btn btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        Henüz blog yazısı eklenmemiş. <a asp-page="Create">Yeni bir yazı eklemek için tıklayın</a>.
+    </div>
+}

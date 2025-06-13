@@ -1,0 +1,46 @@
+@page
+@model PortfolioApp.Pages.Admin.LogoutModel
+@{
+    ViewData["Title"] = "Çıkış Yap";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm mt-5">
+                <div class="card-body p-5 text-center">
+                    <div class="mb-4">
+                        <i class="bi bi-box-arrow-right text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h2 class="h4 mb-4">Çıkış Yapılıyor...</h2>
+                    <p class="text-muted">Güvenli bir şekilde çıkış yapılıyor. Lütfen bekleyiniz.</p>
+                    <div class="spinner-border text-primary mt-3" role="status">
+                        <span class="visually-hidden">Yükleniyor...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sayfa yüklendikten hemen sonra çıkış işlemini gerçekleştir
+            fetch('/Admin/Logout', { method: 'POST' })
+                .then(response => {
+                    if (response.redirected) {
+                        // Çıkış başarılı, giriş sayfasına yönlendir
+                        window.location.href = response.url;
+                    } else {
+                        // Hata durumunda da giriş sayfasına yönlendir
+                        window.location.href = '/Admin/Login';
+                    }
+                })
+                .catch(error => {
+                    console.error('Çıkış işlemi sırasında hata oluştu:', error);
+                    window.location.href = '/Admin/Login';
+                });
+        });
+    </script>
+}

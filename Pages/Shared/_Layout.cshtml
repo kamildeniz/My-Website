@@ -25,24 +25,27 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
+                        @{
+                            var currentPage = ViewContext.RouteData.Values["Page"]?.ToString() ?? string.Empty;
+                        }
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/Index" ? "active" : "")" 
+                            <a class="nav-link @(currentPage == "/Index" ? "active" : "")" 
                                asp-page="/Index">Ana Sayfa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/About" ? "active" : "")" 
+                            <a class="nav-link @(currentPage == "/About" ? "active" : "")" 
                                asp-page="/About">Hakkımda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/Projects/Index" ? "active" : "")" 
+                            <a class="nav-link @(currentPage == "/Projects/Index" ? "active" : "")" 
                                asp-page="/Projects/Index">Projeler</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/Blog/Index" ? "active" : "")" 
+                            <a class="nav-link @(currentPage == "/Blog/Index" ? "active" : "")" 
                                asp-page="/Blog/Index">Blog</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/Contact" ? "active" : "")" 
+                            <a class="nav-link @(currentPage == "/Contact" ? "active" : "")" 
                                asp-page="/Contact">İletişim</a>
                         </li>
                     </ul>

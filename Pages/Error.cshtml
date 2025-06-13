@@ -1,26 +1,141 @@
-﻿@page
+@page
 @model ErrorModel
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Hosting
+@inject IWebHostEnvironment HostEnvironment
+
 @{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = "Hata Oluştu";
+    Layout = "_Layout";
+    
+    var statusCode = Model.StatusCode ?? 500;
+    var errorTitle = "Bir Hata Oluştu";
+    var errorMessage = "Üzgünüz, bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
+    var showRequestId = !string.IsNullOrEmpty(Model.RequestId);
+    var showErrorDetails = HostEnvironment.IsDevelopment() && !string.IsNullOrEmpty(Model.ExceptionMessage);
+    
+    switch (statusCode)
+    {
+        case 400:
+            errorTitle = "Geçersiz İstek";
+            errorMessage = "Üzgünüz, yapmaya çalıştığınız istek geçersiz görünüyor.";
+            break;
+        case 401:
+            errorTitle = "Yetkisiz Erişim";
+            errorMessage = "Bu sayfayı görüntülemek için yetkiniz bulunmamaktadır. Lütfen giriş yapın.";
+            break;
+        case 403:
+            errorTitle = "Erişim Engellendi";
+            errorMessage = "Bu sayfaya erişim izniniz bulunmamaktadır.";
+            break;
+        case 404:
+            errorTitle = "Sayfa Bulunamadı";
+            errorMessage = "Aradığınız sayfa bulunamadı veya taşınmış olabilir.";
+            break;
+        case 500:
+            errorTitle = "Sunucu Hatası";
+            errorMessage = "Üzgünüz, sunucuda bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
+            break;
+    }
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+            <div class="error-content">
+                <div class="error-code display-1 fw-bold text-primary mb-3">@statusCode</div>
+                <h1 class="h3 mb-3">@errorTitle</h1>
+                <p class="lead mb-4">@errorMessage</p>
+                
+                @if (showRequestId)
+                {
+                    <div class="alert alert-light border mb-4">
+                        <p class="mb-1"><strong>Hata Kodu:</strong> @Model.RequestId</p>
+                        @if (showErrorDetails)
+                        {
+                            <p class="mb-1"><strong>Hata Mesajı:</strong> @Model.ExceptionMessage</p>
+                            @if (!string.IsNullOrEmpty(Model.InnerExceptionMessage))
+                            <p class="mb-0">@Model.ErrorMessage</p>
+                        </div>
+                    }
+                    else if (Model.StatusCode == 404)
+                    {
+                        <div class="text-center py-4">
+                            <i class="bi bi-emoji-frown display-1 text-muted"></i>
+                            <h3 class="mt-3">Sayfa Bulunamadı</h3>
+                            <p class="lead">Aradığınız sayfa taşınmış veya kaldırılmış olabilir.</p>
+                        </div>
+                    }
+                    else if (Model.StatusCode == 401 || Model.StatusCode == 403)
+                    {
+                        <div class="text-center py-4">
+                            <i class="bi bi-shield-lock display-1 text-warning"></i>
+                            <h3 class="mt-3">Yetkisiz Erişim</h3>
+                            <p class="lead">Bu sayfayı görüntüleme yetkiniz bulunmamaktadır.</p>
+                            <a href="/Admin/Login?returnUrl=@(Context.Request.Path + Context.Request.QueryString)" class="btn btn-primary mt-3">
+                                <i class="bi bi-box-arrow-in-right"></i> Giriş Yap
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="bi bi-bug display-1 text-danger"></i>
+                            <h3 class="mt-3">Beklenmeyen Bir Hata Oluştu</h3>
+                            <p>Lütfen daha sonra tekrar deneyin veya yöneticinizle iletişime geçin.</p>
+                        </div>
+                    }
 
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
-}
+                    @if (Model.ShowRequestId)
+                    {
+                        <div class="mt-4 text-muted small">
+                            <p class="mb-1"><strong>Hata Kodu:</strong> @Model.RequestId</p>
+                            @if (Model.ShowDevelopmentInfo)
+                            {
+                                <p class="mb-0"><strong>Yol:</strong> @Context.Request.Path</p>
+                            }
+                        </div>
+                    }
+                </div>
+                <div class="card-footer text-center">
+                    <a href="/" class="btn btn-outline-primary">
+                        <i class="bi bi-house-door"></i> Ana Sayfaya Dön
+                    </a>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a href="/Admin/Dashboard" class="btn btn-outline-secondary ms-2">
+                            <i class="bi bi-speedometer2"></i> Yönetim Paneli
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to the <strong>Development</strong> environment displays detailed information about the error that occurred.
-</p>
-<p>
-    <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
-    It can result in displaying sensitive information from exceptions to end users.
-    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
-    and restarting the app.
-</p>
+<style>
+    .card {
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        padding: 1.5rem;
+        border-bottom: none;
+    }
+    
+    .card-body {
+        padding: 2rem;
+    }
+    
+    .display-1 {
+        font-size: 5rem;
+    }
+    
+    .lead {
+        font-size: 1.25rem;
+        font-weight: 300;
+    }
+</style>

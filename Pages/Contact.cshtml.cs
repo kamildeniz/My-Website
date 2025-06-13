@@ -17,13 +17,13 @@ namespace PortfolioApp.Pages
         }
 
         [BindProperty]
-        public ContactFormModel ContactForm { get; set; }
+        public ContactFormModel? ContactForm { get; set; }
 
         public void OnGet()
         {
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPost()
         {
             if (!ModelState.IsValid)
             {
@@ -32,6 +32,12 @@ namespace PortfolioApp.Pages
 
             try
             {
+                if (ContactForm == null)
+                {
+                    ModelState.AddModelError("", "Form verileri eksik.");
+                    return Page();
+                }
+
                 // Here you would typically send an email or save to a database
                 // For now, we'll just log it
                 _logger.LogInformation("Contact form submitted: {Name}, {Email}, {Subject}", 
@@ -54,21 +60,21 @@ namespace PortfolioApp.Pages
         [Required(ErrorMessage = "Adınızı giriniz")]
         [Display(Name = "Adınız")]
         [StringLength(100, ErrorMessage = "Adınız en fazla 100 karakter olabilir")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [Required(ErrorMessage = "E-posta adresinizi giriniz")]
         [EmailAddress(ErrorMessage = "Geçerli bir e-posta adresi giriniz")]
         [Display(Name = "E-posta Adresiniz")]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [Required(ErrorMessage = "Lütfen bir konu giriniz")]
         [StringLength(200, ErrorMessage = "Konu en fazla 200 karakter olabilir")]
         [Display(Name = "Konu")]
-        public string Subject { get; set; }
+        public string? Subject { get; set; }
 
         [Required(ErrorMessage = "Lütfen bir mesaj yazınız")]
         [Display(Name = "Mesajınız")]
         [StringLength(5000, ErrorMessage = "Mesajınız en fazla 5000 karakter olabilir")]
-        public string Message { get; set; }
+        public string? Message { get; set; }
     }
 }

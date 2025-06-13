@@ -1,0 +1,130 @@
+@page
+@model PortfolioApp.Pages.Admin.LoginModel
+@{
+    ViewData["Title"] = "Admin Girişi";
+    Layout = "_AdminLayout";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h2 class="h4 mb-0">
+                        <i class="bi bi-shield-lock me-2"></i>Yönetici Girişi
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>@Model.SuccessMessage
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
+                        </div>
+                    }
+                    
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>@Model.ErrorMessage
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
+                        </div>
+                    }
+
+                    <form method="post" id="loginForm" class="needs-validation" novalidate>
+                        <input type="hidden" asp-for="ReturnUrl" />
+                        
+                        <div class="mb-4">
+                            <label for="email" class="form-label fw-bold">
+                                <i class="bi bi-envelope me-2"></i>E-posta Adresi
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-person-fill"></i>
+                                </span>
+                                <input type="email" 
+                                       class="form-control form-control-lg" 
+                                       id="email" 
+                                       asp-for="Email" 
+                                       placeholder="ornek@mail.com" 
+                                       required>
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between">
+                                <label for="password" class="form-label fw-bold">
+                                    <i class="bi bi-key me-2"></i>Şifre
+                                </label>
+                                <a href="#" class="small text-decoration-none">Şifremi Unuttum?</a>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-lock-fill"></i>
+                                </span>
+                                <input type="password" 
+                                       class="form-control form-control-lg" 
+                                       id="password" 
+                                       asp-for="Password" 
+                                       placeholder="••••••••" 
+                                       required
+                                       autocomplete="current-password">
+                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                    <i class="bi bi-eye-fill"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="mb-4 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe" asp-for="RememberMe">
+                            <label class="form-check-label" for="rememberMe">
+                                Beni Hatırla
+                            </label>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Giriş Yap
+                            </button>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <p class="mb-0">
+                                <i class="bi bi-shield-lock me-1"></i>
+                                Giriş bilgileriniz güvenli bir şekilde şifrelenmiştir.
+                            </p>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer bg-light text-center py-3">
+                    <p class="mb-0 small text-muted">
+                        @DateTime.Now.Year - Tüm hakları saklıdır.
+                    </p>
+                                    var form = $(this);
+                                    if (form[0].checkValidity() === false) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                    }
+                                    form.addClass('was-validated');
+                                });
+
+                                // Debug: Log form submission
+                                $('#loginForm').on('submit', function(e) {
+                                    console.log('Form submitted');
+                                    console.log('Email:', $('#Email').val());
+                                    console.log('Password:', $('#Password').val());
+                                    
+                                    // Show loading state
+                                    var submitBtn = $(this).find('button[type="submit"]');
+                                    submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Giriş Yapılıyor...');
+                                });
+                            });
+                        </script>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Portfolio Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --header-height: 60px;
+            --primary-color: #4e73df;
+            --secondary-color: #858796;
+            --success-color: #1cc88a;
+            --info-color: #36b9cc;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+        }
+
+        body {
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--light-color);
+            color: #333;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            background: linear-gradient(180deg, #4e73df 0%, #224abe 100%);
+            color: white;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .sidebar-brand {
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem 1rem;
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 0.05rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.75rem 1.5rem;
+            margin: 0.1rem 1rem;
+            border-radius: 0.35rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .sidebar .nav-link:hover, 
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar .nav-link i {
+            width: 1.5rem;
+            text-align: center;
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .sidebar .nav-item {
+            position: relative;
+        }
+
+        .sidebar .nav-item .submenu {
+            padding-left: 1.5rem;
+            display: none;
+        }
+
+        .sidebar .nav-item.show .submenu {
+            display: block;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        /* Top Navigation */
+        .topbar {
+            height: var(--header-height);
+            background: white;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 1.5rem;
+        }
+
+        .user-dropdown {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 0.35rem;
+            transition: all 0.3s;
+        }
+
+        .user-dropdown:hover {
+            background-color: var(--light-color);
+        }
+
+        .user-avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .user-info {
+            margin-right: 0.5rem;
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--secondary-color);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .sidebar {
+                margin-left: -100%;
+            }
+            
+            .sidebar.show {
+                margin-left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .topbar {
+                left: 0;
+            }
+            
+            .sidebar-toggle {
+                display: block !important;
+            }
+        }
+        
+        /* Utility Classes */
+        .text-xs {
+            font-size: 0.7rem;
+        }
+        
+        .text-uppercase {
+            text-transform: uppercase;
+        }
+        
+        .font-weight-bold {
+            font-weight: 700 !important;
+        }
+        
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1100;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .sidebar-toggle:hover {
+            background: var(--primary-color);
+            opacity: 0.9;
+        }
+        
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            padding: 1rem 1.35rem;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        /* Table Styles */
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #5a5c69;
+        }
+        
+        .table th {
+            border-top: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.05rem;
+            padding: 0.75rem;
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+        }
+        
+        .table td {
+            padding: 0.75rem;
+            vertical-align: middle;
+            border-top: 1px solid #e3e6f0;
+        }
+        
+        /* Button Styles */
+        .btn {
+            border-radius: 0.35rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2653d4;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #e02d1b;
+            border-color: #d52a1a;
+        }
+        
+        /* Form Controls */
+        .form-control, .form-select {
+            border-radius: 0.35rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+            border: 1px solid #d1d3e2;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #bac8f3;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+        
+        /* Badges */
+        .badge {
+            font-weight: 600;
+            padding: 0.35em 0.65em;
+            font-size: 75%;
+            border-radius: 0.25rem;
+        }
+        
+        /* Alerts */
+        .alert {
+            border: none;
+            border-radius: 0.35rem;
+            padding: 1rem 1.5rem;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <!-- Sidebar Toggle Button (Mobile) -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/Admin">
+            <div class="sidebar-brand-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">Admin Paneli</div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        @if (User.Identity?.IsAuthenticated ?? false)
+        {
+            <!-- Nav Items -->
+            <div class="sidebar-nav">
+                @{
+                    var currentPage = ViewContext.RouteData.Values["Page"]?.ToString() ?? "";
+                    bool isActive(string page) => currentPage.Contains(page, StringComparison.OrdinalIgnoreCase);
+                }
+
+                <div class="nav-item @(isActive("Index") ? "active" : "")">
+                    <a class="nav-link" href="/Admin">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Gösterge Paneli</span>
+                    </a>
+                </div>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+
+                <!-- Heading -->
+                <div class="sidebar-heading">
+                    İçerik Yönetimi
+                </div>
+
+                <div class="nav-item @(isActive("Projects") ? "active" : "")">
+                    <a class="nav-link" href="/Admin/Projects">
+                        <i class="bi bi-folder"></i>
+                        <span>Projeler</span>
+                    </a>
+                </div>
+
+
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+
+
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block">
+
+
+                <!-- Sidebar Toggler (Sidebar) -->
+                <div class="text-center d-none d-md-inline">
+                    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Topbar -->
+            <nav class="topbar navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <!-- Sidebar Toggle (Topbar) -->
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="bi bi-list"></i>
+                </button>
+
+
+                <!-- Topbar Navbar -->
+                <ul class="navbar-nav ml-auto">
+                    <!-- Nav Item - User Information -->
+                    @if (User.Identity?.IsAuthenticated ?? false)
+                    {
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <div class="user-dropdown">
+                                    <div class="user-avatar">
+                                        @User.Identity.Name?[0].ToString().ToUpper()
+                                    </div>
+                                    <div class="user-info d-none d-md-block">
+                                        <div class="user-name">@User.Identity.Name</div>
+                                        <div class="user-role">Admin</div>
+                                    </div>
+                                    <i class="bi bi-chevron-down ms-1 d-none d-md-inline"></i>
+                                </div>
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                 aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-person me-2 text-gray-400"></i>
+                                    Profil
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-gear me-2 text-gray-400"></i>
+                                    Ayarlar
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                                    <i class="bi bi-box-arrow-right me-2 text-gray-400"></i>
+                                    Çıkış Yap
+                                </a>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </nav>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @RenderBody()
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; @DateTime.Now.Year - Tüm Hakları Saklıdır</span>
+                </div>
+            </div>
+        </footer>
+        <!-- End of Footer -->
+    </div>
+    <!-- End of Content Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="bi bi-arrow-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Çıkış Yapılıyor</h5>
+                    <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Oturumunuzu kapatmak istediğinizden emin misiniz?</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">İptal</button>
+                    <form id="logoutForm" method="post" asp-page="/Admin/Logout" class="d-inline">
+                        <button type="submit" class="btn btn-danger">Çıkış Yap</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Custom scripts for all pages-->
+    <script>
+        // Toggle the side navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.body.querySelector('#sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sidebar.classList.toggle('show');
+                    localStorage.setItem('sb|sidebar-toggle', sidebar.classList.contains('show'));
+                });
+            }
+
+            // Close any open menu when clicking outside
+            document.addEventListener('click', function(event) {
+                const isClickInsideSidebar = sidebar.contains(event.target) || 
+                                          (sidebarToggle && sidebarToggle.contains(event.target));
+                
+                if (!isClickInsideSidebar && window.innerWidth < 768) {
+                    sidebar.classList.remove('show');
+                    localStorage.setItem('sb|sidebar-toggle', 'false');
+                }
+            });
+
+            // Handle logout form submission
+            const logoutForm = document.getElementById('logoutForm');
+            if (logoutForm) {
+                logoutForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Show loading state
+                    const submitButton = this.querySelector('button[type="submit"]');
+                    const originalText = submitButton.innerHTML;
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Çıkış yapılıyor...';
+                    
+                    // Submit the form
+                    this.submit();
+                });
+            }
+
+
+            // Auto-hide alerts after 5 seconds
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 5000);
+            });
+        });
+
+        // Handle back button and page refresh
+        window.addEventListener('pageshow', function(event) {
+            // Close sidebar on mobile when navigating back
+            if (window.innerWidth < 768) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) {
+                    sidebar.classList.remove('show');
+                }
+            }
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

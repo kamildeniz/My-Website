@@ -1,0 +1,65 @@
+@page
+@model PortfolioApp.Pages.Admin.DashboardModel
+@{
+    ViewData["Title"] = "Yönetim Paneli";
+    Layout = "_AdminLayout";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Yönetim Paneli</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Blog Yönetimi</h5>
+                <p class="card-text">Blog yazılarınızı yönetin, yeni yazılar ekleyin veya mevcut yazıları düzenleyin.</p>
+                <a href="/Admin/Posts" class="btn btn-primary">Blog Yazılarına Git</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Proje Yönetimi</h5>
+                <p class="card-text">Portföyünüzdeki projeleri yönetin, yeni projeler ekleyin veya mevcut projeleri düzenleyin.</p>
+                <a href="/Admin/Projects" class="btn btn-primary">Projelere Git</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="mb-0">Sistem Bilgileri</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card bg-light mb-3">
+                    <div class="card-body">
+                        <h6 class="card-title">Toplam Blog Yazısı</h6>
+                        <p class="h2 text-center">@Model.TotalBlogPosts</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-light mb-3">
+                    <div class="card-body">
+                        <h6 class="card-title">Toplam Proje</h6>
+                        <p class="h2 text-center">@Model.TotalProjects</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-light mb-3">
+                    <div class="card-body">
+                        <h6 class="card-title">Son Giriş</h6>
+                        <p class="h6 text-center">@DateTime.Now.ToString("dd.MM.yyyy HH:mm")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

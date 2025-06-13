@@ -1,0 +1,107 @@
+@page "{id:int}"
+@model PortfolioApp.Pages.Admin.Posts.EditModel
+@{
+    ViewData["Title"] = "Yazıyı Düzenle: " + Model.BlogPost.Title;
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+    <h1 class="h2">Yazıyı Düzenle: @Model.BlogPost.Title</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a asp-page="Index" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Listeye Dön
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="post">
+            <input type="hidden" asp-for="BlogPost.Id" />
+            <input type="hidden" asp-for="BlogPost.CreatedAt" />
+            <input type="hidden" asp-for="BlogPost.Author" />
+            
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="mb-3">
+                <label asp-for="BlogPost.Title" class="form-label">Başlık</label>
+                <input asp-for="BlogPost.Title" class="form-control" />
+                <span asp-validation-for="BlogPost.Title" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="BlogPost.Slug" class="form-label">URL Yolu</label>
+                <input asp-for="BlogPost.Slug" class="form-control" />
+                <span asp-validation-for="BlogPost.Slug" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="BlogPost.Excerpt" class="form-label">Özet</label>
+                <textarea asp-for="BlogPost.Excerpt" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="BlogPost.Excerpt" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="BlogPost.Content" class="form-label">İçerik (Markdown)</label>
+                <textarea asp-for="BlogPost.Content" class="form-control" rows="10"></textarea>
+                <span asp-validation-for="BlogPost.Content" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="BlogPost.Tags" class="form-label">Etiketler (virgülle ayırın)</label>
+                <input asp-for="BlogPost.Tags" class="form-control" />
+                <span asp-validation-for="BlogPost.Tags" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <div class="form-check">
+                    <input asp-for="BlogPost.IsPublished" class="form-check-input" />
+                    <label asp-for="BlogPost.IsPublished" class="form-check-label">Yayınla</label>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Güncelle
+                </button>
+                <a asp-page="Index" class="btn btn-secondary">İptal</a>
+            </div>
+        </form>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">İstatistikler</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-1"><strong>Oluşturulma:</strong> @Model.BlogPost.CreatedAt.ToString("dd.MM.yyyy HH:mm")</p>
+                @if (Model.BlogPost.UpdatedAt.HasValue)
+                {
+                    <p class="mb-1"><strong>Son Güncelleme:</strong> @Model.BlogPost.UpdatedAt.Value.ToString("dd.MM.yyyy HH:mm")</p>
+                }
+                <p class="mb-1"><strong>Yazar:</strong> @Model.BlogPost.Author</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Hızlı Erişim</h5>
+            </div>
+            <div class="card-body">
+                <a href="/blog/@Model.BlogPost.Slug" class="btn btn-outline-primary btn-sm w-100 mb-2" target="_blank">
+                    <i class="bi bi-eye"></i> Önizleme
+                </a>
+                <form method="post" asp-page-handler="Delete" asp-route-id="@Model.BlogPost.Id" 
+                      onsubmit="return confirm('Bu yazıyı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.');">
+                    <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                        <i class="bi bi-trash"></i> Sil
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

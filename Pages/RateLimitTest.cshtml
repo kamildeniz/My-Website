@@ -1,0 +1,117 @@
+@page
+@model PortfolioApp.Pages.RateLimitTestModel
+@{
+    ViewData["Title"] = "Rate Limit Test";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Rate Limit Test</h2>
+                </div>
+                <div class="card-body">
+                    <p class="lead">This page helps you test the rate limiting functionality.</p>
+                    
+                    <div class="alert alert-info">
+                        <h5>Current Rate Limit Settings:</h5>
+                        <ul class="mb-0">
+                            <li><strong>Request Limit:</strong> 100 requests</li>
+                            <li><strong>Time Window:</strong> 60 seconds</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <button id="testButton" class="btn btn-primary">Test Rate Limit</button>
+                        <button id="resetButton" class="btn btn-outline-secondary">Reset Counter</button>
+                    </div>
+
+                    <div id="results" class="mt-4">
+                        <h4>Test Results:</h4>
+                        <div id="resultList" class="list-group">
+                            <!-- Results will be added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const testButton = document.getElementById('testButton');
+            const resetButton = document.getElementById('resetButton');
+            const resultList = document.getElementById('resultList');
+            let requestCount = 0;
+            let successCount = 0;
+            let errorCount = 0;
+
+            function addResult(message, isError = false) {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString();
+                const resultItem = document.createElement('div');
+                resultItem.className = `list-group-item list-group-item-${isError ? 'danger' : 'success'}`;
+                resultItem.textContent = `[${timeString}] ${message}`;
+                resultList.prepend(resultItem);
+            }
+
+            async function testRateLimit() {
+                try {
+                    requestCount++;
+                    const response = await fetch('/api/ratelimit-test', {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Request-Number': requestCount
+                        }
+                    });
+
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        successCount++;
+                        addResult(`Request #${requestCount}: Success! Remaining: ${data.remaining}/${data.limit}`);
+                    } else {
+                        errorCount++;
+                        addResult(`Request #${requestCount}: ${data.message || 'Rate limit exceeded!'}`, true);
+                    }
+                    
+                    updateButtonState();
+                } catch (error) {
+                    errorCount++;
+                    addResult(`Request #${requestCount}: Error - ${error.message}`, true);
+                    updateButtonState();
+                }
+            }
+
+            function updateButtonState() {
+                testButton.textContent = `Test Rate Limit (${requestCount})`;
+                testButton.disabled = errorCount > 0;
+                
+                if (errorCount > 0) {
+                    testButton.classList.remove('btn-primary');
+                    testButton.classList.add('btn-danger');
+                    testButton.textContent = `Rate Limited! (${errorCount} errors)`;
+                }
+            }
+
+            function resetTest() {
+                requestCount = 0;
+                successCount = 0;
+                errorCount = 0;
+                resultList.innerHTML = '';
+                testButton.disabled = false;
+                testButton.classList.remove('btn-danger');
+                testButton.classList.add('btn-primary');
+                testButton.textContent = 'Test Rate Limit';
+                addResult('Test counter has been reset.');
+            }
+
+            testButton.addEventListener('click', testRateLimit);
+            resetButton.addEventListener('click', resetTest);
+        });
+    </script>
+}

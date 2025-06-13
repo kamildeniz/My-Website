@@ -1,0 +1,44 @@
+@page "{id:int}"
+@model PortfolioApp.Pages.Admin.Posts.DeleteModel
+@{
+    ViewData["Title"] = "Yazıyı Sil" + (Model.BlogPost?.Title != null ? ": " + Model.BlogPost.Title : string.Empty);
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+    <h1 class="h2">Yazıyı Sil</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a asp-page="Index" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Listeye Dön
+        </a>
+    </div>
+</div>
+
+<div class="alert alert-danger">
+    <h4>Bu yazıyı silmek istediğinizden emin misiniz?</h4>
+    <p>Bu işlem geri alınamaz. Aşağıdaki yazı kalıcı olarak silinecektir:</p>
+    
+    <dl class="row">
+        <dt class="col-sm-2">Başlık:</dt>
+        <dd class="col-sm-10">@(Model.BlogPost?.Title ?? "Başlık Yok")</dd>
+        
+        <dt class="col-sm-2">Oluşturulma:</dt>
+        <dd class="col-sm-10">@(Model.BlogPost?.CreatedAt.ToString("dd.MM.yyyy HH:mm") ?? "Bilinmiyor")</dd>
+        
+        @if (Model.BlogPost?.UpdatedAt.HasValue == true)
+        {
+            <dt class="col-sm-2">Son Güncelleme:</dt>
+            <dd class="col-sm-10">@Model.BlogPost.UpdatedAt.Value.ToString("dd.MM.yyyy HH:mm")</dd>
+        }
+        
+        <dt class="col-sm-2">Yazar:</dt>
+        <dd class="col-sm-10">@(Model.BlogPost?.Author ?? "Bilinmiyor")</dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="BlogPost.Id" />
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Sil
+        </button>
+        <a asp-page="./Index" class="btn btn-secondary">İptal</a>
+    </form>
+</div>
