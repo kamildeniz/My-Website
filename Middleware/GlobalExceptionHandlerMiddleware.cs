@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using PortfolioApp.Middleware;
 using PortfolioApp.Models;
 
 namespace PortfolioApp.Middleware

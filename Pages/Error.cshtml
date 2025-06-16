@@ -2,7 +2,9 @@
 @model ErrorModel
 @using Microsoft.AspNetCore.Hosting
 @using Microsoft.Extensions.Hosting
+@using Microsoft.AspNetCore.Http
 @inject IWebHostEnvironment HostEnvironment
+@inject IHttpContextAccessor HttpContextAccessor
 
 @{
     ViewData["Title"] = "Hata Oluştu";
@@ -55,9 +57,12 @@
                         {
                             <p class="mb-1"><strong>Hata Mesajı:</strong> @Model.ExceptionMessage</p>
                             @if (!string.IsNullOrEmpty(Model.InnerExceptionMessage))
-                            <p class="mb-0">@Model.ErrorMessage</p>
-                        </div>
-                    }
+                            {
+                                <p class="mb-0">@Model.ErrorMessage</p>
+                            }
+                        }
+                    </div>
+                }
                     else if (Model.StatusCode == 404)
                     {
                         <div class="text-center py-4">
@@ -72,7 +77,7 @@
                             <i class="bi bi-shield-lock display-1 text-warning"></i>
                             <h3 class="mt-3">Yetkisiz Erişim</h3>
                             <p class="lead">Bu sayfayı görüntüleme yetkiniz bulunmamaktadır.</p>
-                            <a href="/Admin/Login?returnUrl=@(Context.Request.Path + Context.Request.QueryString)" class="btn btn-primary mt-3">
+                            <a href="/Admin/Login?returnUrl=@(HttpContextAccessor.HttpContext?.Request.Path + HttpContextAccessor.HttpContext?.Request.QueryString)" class="btn btn-primary mt-3">
                                 <i class="bi bi-box-arrow-in-right"></i> Giriş Yap
                             </a>
                         </div>
@@ -92,10 +97,11 @@
                             <p class="mb-1"><strong>Hata Kodu:</strong> @Model.RequestId</p>
                             @if (Model.ShowDevelopmentInfo)
                             {
-                                <p class="mb-0"><strong>Yol:</strong> @Context.Request.Path</p>
+                                <p class="mb-0"><strong>Yol:</strong> @HttpContextAccessor.HttpContext?.Request.Path</p>
                             }
                         </div>
                     }
+                }
                 </div>
                 <div class="card-footer text-center">
                     <a href="/" class="btn btn-outline-primary">

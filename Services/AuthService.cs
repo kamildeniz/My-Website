@@ -2,13 +2,15 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 
 namespace PortfolioApp.Services
 {
@@ -18,8 +20,8 @@ namespace PortfolioApp.Services
         private readonly ILogger<AuthService> _logger;
         private readonly IConfiguration _configuration;
         private readonly string _adminEmail;
-        private readonly string _adminPasswordHash;
-        private readonly string _adminSalt;
+        private string _adminPasswordHash;
+        private string _adminSalt;
         private const int KeySize = 32; // 256 bit
         private const int Iterations = 100000; // PBKDF2 iteration count
 
@@ -28,28 +30,14 @@ namespace PortfolioApp.Services
             ILogger<AuthService> logger,
             IConfiguration configuration)
         {
-            _httpContextAccessor = httpContextAccessor;
-            _logger = logger;
-            _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             
             // Yapılandırmadan kimlik bilgilerini al
             _adminEmail = _configuration["AdminCredentials:Email"] ?? "admin@example.com";
             _adminPasswordHash = _configuration["AdminCredentials:PasswordHash"];
             _adminSalt = _configuration["AdminCredentials:PasswordSalt"];
-            
-            // Eğer yapılandırmada hash yoksa, varsayılan şifre için hash oluştur
-            if (string.IsNullOrEmpty(_adminPasswordHash) || string.IsNullOrEmpty(_adminSalt))
-            {
-                // Sadece geliştirme ortamında kullanılacak varsayılan değerler
-                if (_configuration.GetValue<bool>("IsDevelopment"))
-                {
-                    _adminPasswordHash = HashPassword("Admin123!");
-                }
-                else
-                {
-                    throw new InvalidOperationException("Admin credentials are not properly configured.");
-                }
-            }
             
             _logger.LogInformation("AuthService initialized");
         }
@@ -74,13 +62,56 @@ namespace PortfolioApp.Services
                     return false;
                 }
 
-                // Şifre doğrulaması
-                bool isPasswordValid = VerifyPassword(password, _adminPasswordHash, _adminSalt);
-                
-                if (!isPasswordValid)
+                // Eğer yapılandırmada hash yoksa, varsayılan şifre için kontrol yap
+                if (string.IsNullOrEmpty(_adminPasswordHash) || string.IsNullOrEmpty(_adminSalt))
                 {
-                    _logger.LogWarning($"Login failed - Invalid password for user: {email}");
-                    return false;
+                    // Varsayılan şifre kontrolü (sadece geliştirme ortamında)
+                    if (password == "Admin123!" && _configuration.GetValue<bool>("IsDevelopment", true))
+                    {
+                        _logger.LogInformation("Using default password for development environment");
+                        // Geliştirme ortamında şifreyi kaydet
+                        var (hash, salt) = HashPassword("Admin123!");
+                        
+                        // appsettings.json'ı güncelle
+                        var appSettingsPath = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
+                        var appSettingsJson = System.Text.Json.JsonSerializer.Serialize(
+                            new {
+                                ConnectionStrings = _configuration.GetSection("ConnectionStrings").Get<object>(),
+                                Logging = _configuration.GetSection("Logging").Get<object>(),
+                                AdminCredentials = new 
+                                {
+                                    Email = _configuration["AdminCredentials:Email"],
+                                    PasswordHash = hash,
+                                    PasswordSalt = salt
+                                },
+                                Security = _configuration.GetSection("Security").Get<object>(),
+                                Cors = _configuration.GetSection("Cors").Get<object>(),
+                                AllowedHosts = _configuration["AllowedHosts"],
+                                IsDevelopment = true
+                            }, 
+                            new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+                        
+                        await File.WriteAllTextAsync(appSettingsPath, appSettingsJson);
+                        
+                        _adminPasswordHash = hash;
+                        _adminSalt = salt;
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Login failed - Invalid password or not in development mode");
+                        return false;
+                    }
+                }
+                else
+                {
+                    // Şifre doğrulaması
+                    bool isPasswordValid = VerifyPassword(password, _adminPasswordHash, _adminSalt);
+                    
+                    if (!isPasswordValid)
+                    {
+                        _logger.LogWarning($"Login failed - Invalid password for user: {email}");
+                        return false;
+                    }
                 }
 
                 // Kullanıcı kimlik bilgilerini oluştur
@@ -90,8 +121,7 @@ namespace PortfolioApp.Services
                     new Claim(ClaimTypes.Email, email),
                     new Claim(ClaimTypes.Name, "Admin User"),
                     new Claim(ClaimTypes.Role, "Administrator"),
-                    new Claim("LastLogin", DateTime.UtcNow.ToString("o")),
-                    new Claim("CustomClaim", "CustomValue")
+                    new Claim("LastLogin", DateTime.UtcNow.ToString("o"))
                 };
 
                 var claimsIdentity = new ClaimsIdentity(
@@ -126,6 +156,7 @@ namespace PortfolioApp.Services
                     authProperties);
 
                 _logger.LogInformation($"Login successful for user: {email}");
+                _logger.LogInformation("=== AUTH SERVICE LOGIN SUCCESS ===");
                 return true;
             }
             catch (Exception ex)
@@ -136,7 +167,7 @@ namespace PortfolioApp.Services
         }
 
         // Şifre hash'ini oluşturur
-        public string HashPassword(string password)
+        public (string hash, string salt) HashPassword(string password)
         {
             // Rastgele tuz oluştur
             byte[] salt = new byte[16];
@@ -154,39 +185,26 @@ namespace PortfolioApp.Services
                 
             byte[] hash = pbkdf2.GetBytes(KeySize);
             
-            // Hash ve tuzu birleştir (tuz + hash)
-            byte[] hashBytes = new byte[16 + KeySize];
-            Array.Copy(salt, 0, hashBytes, 0, 16);
-            Array.Copy(hash, 0, hashBytes, 16, KeySize);
-            
-            // Base64'e çevir
-            string savedPasswordHash = Convert.ToBase64String(hashBytes);
-            
-            // Tuzu da kaydet (gerçek uygulamada güvenli bir şekilde saklanmalı)
-            string savedSalt = Convert.ToBase64String(salt);
-            
             _logger.LogInformation("Password hashed successfully");
-            return $"{savedPasswordHash}:{savedSalt}";
+            return (
+                hash: Convert.ToBase64String(hash),
+                salt: Convert.ToBase64String(salt)
+            );
         }
         
         // Şifreyi doğrula
-        public bool VerifyPassword(string password, string savedPasswordHashWithSalt, string savedSalt = null)
+        public bool VerifyPassword(string password, string savedHash, string savedSalt)
         {
             try
             {
-                string[] hashParts = savedPasswordHashWithSalt.Split(':');
-                string savedHash = hashParts[0];
-                string salt = savedSalt ?? (hashParts.Length > 1 ? hashParts[1] : null);
-                
-                if (string.IsNullOrEmpty(salt))
+                if (string.IsNullOrEmpty(savedHash) || string.IsNullOrEmpty(savedSalt))
                 {
-                    _logger.LogWarning("Salt not found, using legacy verification");
-                    // Eski şifre doğrulama yöntemi (sadece geliştirme için)
-                    return savedPasswordHashWithSalt == password;
+                    _logger.LogWarning("Hash or salt is null or empty");
+                    return false;
                 }
                 
                 byte[] hashBytes = Convert.FromBase64String(savedHash);
-                byte[] saltBytes = Convert.FromBase64String(salt);
+                byte[] saltBytes = Convert.FromBase64String(savedSalt);
                 
                 // PBKDF2 ile hash hesapla
                 using var pbkdf2 = new Rfc2898DeriveBytes(
@@ -200,7 +218,7 @@ namespace PortfolioApp.Services
                 // Hash'leri karşılaştır
                 for (int i = 0; i < KeySize; i++)
                 {
-                    if (hashBytes[16 + i] != computedHash[i])
+                    if (hashBytes[i] != computedHash[i])
                     {
                         _logger.LogWarning("Password verification failed - hashes do not match");
                         return false;
@@ -240,8 +258,6 @@ namespace PortfolioApp.Services
                 // Oturumu sonlandır
                 await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-                // Session'ı temizle
-                httpContext.Session.Clear();
 
                 // Tarayıcıdaki çerezleri sil
                 var cookies = httpContext.Request.Cookies.Keys;
@@ -259,83 +275,9 @@ namespace PortfolioApp.Services
             }
         }
 
-
-                _logger.LogInformation("Admin credentials matched");
-                
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Email, email),
-                    new Claim(ClaimTypes.Name, "Admin"),
-                    new Claim(ClaimTypes.Role, "Admin")
-                };
-
-                var claimsIdentity = new ClaimsIdentity(
-                    claims, 
-                    CookieAuthenticationDefaults.AuthenticationScheme);
-
-
-                var httpContext = _httpContextAccessor.HttpContext;
-                if (httpContext == null)
-                {
-                    _logger.LogError("HttpContext is null");
-                    return false;
-                }
-
-
-                _logger.LogInformation("Signing in...");
-                
-                // Sign in with default authentication scheme
-                await httpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity),
-                    new AuthenticationProperties
-                    {
-                        IsPersistent = true,
-                        AllowRefresh = true,
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30),
-                        IssuedUtc = DateTimeOffset.UtcNow
-                    });
-
-                _logger.LogInformation("User signed in successfully");
-                
-                // Log the authentication cookie that was set
-                if (httpContext.Response.Headers.TryGetValue("Set-Cookie", out var setCookieHeaders))
-                {
-                    _logger.LogInformation("Set-Cookie headers:");
-                    foreach (var header in setCookieHeaders)
-                    {
-                        _logger.LogInformation(header);
-                    }
-                }
-                else
-                {
-                    _logger.LogWarning("No Set-Cookie header found in response");
-                }
-
-                _logger.LogInformation("=== AUTH SERVICE LOGIN SUCCESS ===");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during login");
-                _logger.LogInformation("=== AUTH SERVICE LOGIN ERROR ===");
-                return false;
-            }
-        }
-
-        public async Task Logout()
-        {
-            var httpContext = _httpContextAccessor.HttpContext;
-            if (httpContext != null)
-            {
-                await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            }
-            else
-            {
-                _logger.LogWarning("HttpContext is null in Logout method");
-            }
-        }
-
+        /// <summary>
+        /// Kullanıcının kimlik doğrulama durumunu kontrol eder
+        /// </summary>
         public Task<bool> IsAuthenticatedAsync()
         {
             try
@@ -360,28 +302,27 @@ namespace PortfolioApp.Services
                     return Task.FromResult(false);
                 }
 
-                // Additional check - verify the user has required claims
+                // Kullanıcının email claim'ini kontrol et
                 var email = user.FindFirst(ClaimTypes.Email)?.Value;
-                if (string.IsNullOrEmpty(email) || !string.Equals(email, AdminEmail, StringComparison.OrdinalIgnoreCase))
+                if (string.IsNullOrEmpty(email) || !string.Equals(email, _adminEmail, StringComparison.OrdinalIgnoreCase))
                 {
                     _logger.LogWarning($"Invalid or missing email in claims: {email}");
                     return Task.FromResult(false);
                 }
 
-                _logger.LogInformation($"User {email} is authenticated with valid claims");
-                
-                // Log all claims for debugging
+                // Kullanıcı claim'lerini logla (debug için)
                 _logger.LogInformation("User claims:");
                 foreach (var claim in user.Claims)
                 {
                     _logger.LogInformation($"{claim.Type} = {claim.Value}");
                 }
 
+                _logger.LogInformation($"User {email} is authenticated");
                 return Task.FromResult(true);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in IsAuthenticatedAsync");
+                _logger.LogError(ex, "Error checking authentication status");
                 return Task.FromResult(false);
             }
         }

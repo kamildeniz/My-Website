@@ -102,28 +102,32 @@
                     <p class="mb-0 small text-muted">
                         @DateTime.Now.Year - Tüm hakları saklıdır.
                     </p>
-                                    var form = $(this);
-                                    if (form[0].checkValidity() === false) {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                    }
-                                    form.addClass('was-validated');
-                                });
-
-                                // Debug: Log form submission
-                                $('#loginForm').on('submit', function(e) {
-                                    console.log('Form submitted');
-                                    console.log('Email:', $('#Email').val());
-                                    console.log('Password:', $('#Password').val());
-                                    
-                                    // Show loading state
-                                    var submitBtn = $(this).find('button[type="submit"]');
-                                    submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Giriş Yapılıyor...');
-                                });
-                            });
-                        </script>
-                    }
                 </div>
+
+                @section Scripts {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            const form = document.getElementById("loginForm");
+                            form.addEventListener("submit", function(e) {
+                                if (!form.checkValidity()) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                }
+                                form.classList.add("was-validated");
+
+                                // Debug
+                                console.log("Form submitted");
+                                console.log("Email:", form.querySelector("#email").value);
+
+                                // Show loading
+                                const btn = form.querySelector('button[type="submit"]');
+                                btn.disabled = true;
+                                btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Giriş Yapılıyor...';
+                            });
+                        });
+                    </script>
+                }
+
             </div>
         </div>
     </div>

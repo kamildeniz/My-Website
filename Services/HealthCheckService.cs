@@ -30,7 +30,8 @@ namespace PortfolioApp.Services
                 // Check application health here
                 var memoryInfo = GC.GetGCMemoryInfo();
                 var allocated = GC.GetTotalMemory(forceFullCollection: false);
-                var memoryThreshold = 1024 * 1024 * 1024; // 1GB
+                // 1GB memory threshold - currently not used but kept for future use
+                _ = 1024 * 1024 * 1024; // 1GB
                 var status = _isHealthy ? HealthStatus.Healthy : HealthStatus.Unhealthy;
                 
                 var data = new Dictionary<string, object>

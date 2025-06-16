@@ -1,23 +1,24 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using PortfolioApp.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -28,6 +29,7 @@ using PortfolioApp.Filters;
 using PortfolioApp.Middleware;
 using PortfolioApp.Options;
 using PortfolioApp.Services;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +42,121 @@ builder.Services.AddRazorPages(options =>
 })
 .AddApplicationPart(typeof(Program).Assembly);
 
+// Add memory cache
+builder.Services.AddMemoryCache();
+
+// Add HTTP context accessor
+builder.Services.AddHttpContextAccessor();
+
+// Add HTTP context accessor
+builder.Services.AddHttpContextAccessor();
+
+// Add memory cache
+builder.Services.AddMemoryCache();
+
+// Add session with configuration
+var sessionTimeoutMinutes = builder.Configuration.GetValue<int>("Security:SessionTimeoutInMinutes", 30);
+var requireHttps = builder.Configuration.GetValue<bool>("Security:RequireHttps", false);
+var cookieName = builder.Configuration["Security:CookieName"] ?? ".AspNet.SharedCookie";
+
+// Add session
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutMinutes);
+    options.Cookie.Name = ".Portfolio.Session";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = requireHttps 
+        ? CookieSecurePolicy.Always 
+        : CookieSecurePolicy.None;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+});
+
+// Add authentication with detailed cookie settings
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        // Cookie settings
+        options.Cookie.Name = cookieName;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = requireHttps 
+            ? CookieSecurePolicy.Always 
+            : CookieSecurePolicy.None;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.IsEssential = true;
+        options.Cookie.MaxAge = TimeSpan.FromMinutes(sessionTimeoutMinutes);
+        
+        // Authentication paths
+        options.LoginPath = "/Admin/Login";
+        options.LogoutPath = "/Admin/Logout";
+        options.AccessDeniedPath = "/Error?statusCode=403";
+        options.ReturnUrlParameter = "returnUrl";
+        
+        // Session settings
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(sessionTimeoutMinutes);
+        options.SlidingExpiration = true;
+        
+        // Security settings
+        options.ClaimsIssuer = "PortfolioApp";
+        
+        // Event handlers
+        options.Events = new CookieAuthenticationEvents
+        {
+            OnSigningIn = context =>
+            {
+                var userName = context.Principal?.Identity?.Name ?? "[unknown]";
+                Console.WriteLine($"User {userName} is signing in.");
+                return Task.CompletedTask;
+            },
+            OnSignedIn = context =>
+            {
+                var userName = context.Principal?.Identity?.Name ?? "[unknown]";
+                Console.WriteLine($"User {userName} has successfully signed in.");
+                return Task.CompletedTask;
+            },
+            OnRedirectToLogin = context =>
+            {
+                if (context.Request.Path.StartsWithSegments("/api") ||
+                    context.Request.ContentType?.ToLower().Contains("application/json") == true)
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                }
+                context.Response.Redirect(context.RedirectUri);
+                return Task.CompletedTask;
+            },
+            OnRedirectToAccessDenied = context =>
+            {
+                if (context.Request.Path.StartsWithSegments("/api") ||
+                    context.Request.ContentType?.ToLower().Contains("application/json") == true)
+                {
+                    context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                    return Task.CompletedTask;
+                }
+                context.Response.Redirect(context.RedirectUri);
+                return Task.CompletedTask;
+            }
+        };
+    });
+
+// Add authorization
+builder.Services.AddAuthorization();
+
+// Add health checks
+builder.Services.AddHealthChecks()
+    .AddCheck<PortfolioApp.Services.HealthCheckService>("self", tags: new[] { "ready" })
+    .AddCheck("live", () => HealthCheckResult.Healthy("Application is live"), tags: new[] { "live" });
+
+// Configure request timing options
+builder.Services.Configure<RequestTimingOptions>(builder.Configuration.GetSection("RequestTiming"));
+
+// Configure rate limiting options
+builder.Services.Configure<RateLimitingOptions>(builder.Configuration.GetSection("RateLimiting"));
+
+// Register services
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<PortfolioApp.Services.HealthCheckService>();
+
 // Add API controllers
 builder.Services.AddControllers()
     .AddApplicationPart(Assembly.GetExecutingAssembly());
@@ -51,21 +168,7 @@ builder.Configuration
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables();
 
-// Add memory cache for login attempts
-builder.Services.AddMemoryCache();
 
-// Add session with configuration
-var sessionTimeoutMinutes = builder.Configuration.GetValue<int>("Security:SessionTimeoutInMinutes", 30);
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutMinutes);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-    options.Cookie.SecurePolicy = builder.Configuration.GetValue<bool>("Security:RequireHttps", false) 
-        ? CookieSecurePolicy.Always 
-        : CookieSecurePolicy.None;
-    options.Cookie.SameSite = SameSiteMode.Lax;
-});
 
 // Add CORS if needed
 var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
@@ -89,11 +192,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Register application services
 builder.Services.AddScoped<AuthService>();
-builder.Services.AddMemoryCache();
-
-// Add health checks
-builder.Services.AddHealthChecks()
-    .AddCheck<HealthCheckService>("application_health");
 
 // Configure JSON options for health checks
 builder.Services.Configure<JsonSerializerOptions>(options =>
@@ -121,106 +219,7 @@ builder.Services.Configure<RateLimitingOptions>(options =>
     };
 });
 
-// Add session support
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
 
-// Add HTTP context accessor
-builder.Services.AddHttpContextAccessor();
-
-// Add authorization
-builder.Services.AddAuthorization();
-
-// Add authentication with detailed cookie settings
-var cookieName = builder.Configuration["Security:CookieName"] ?? ".AspNet.SharedCookie";
-var requireHttps = builder.Configuration.GetValue<bool>("Security:RequireHttps", false);
-var sessionTimeoutMinutes = builder.Configuration.GetValue<int>("Security:SessionTimeoutInMinutes", 30);
-
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        // Cookie settings
-        options.Cookie.Name = cookieName;
-        options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = requireHttps 
-            ? CookieSecurePolicy.Always 
-            : CookieSecurePolicy.None;
-        options.Cookie.SameSite = SameSiteMode.Lax;
-        options.Cookie.IsEssential = true;
-        options.Cookie.MaxAge = TimeSpan.FromMinutes(sessionTimeoutMinutes);
-        
-        // Authentication paths
-        options.LoginPath = "/Admin/Login";
-        options.LogoutPath = "/Admin/Logout";
-        options.AccessDeniedPath = "/Admin/Login";
-        options.ReturnUrlParameter = "returnUrl";
-        
-        // Session settings
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(sessionTimeoutMinutes);
-        options.SlidingExpiration = true;
-        
-        // Security settings
-        options.ClaimsIssuer = "PortfolioApp";
-        options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-        options.AccessDeniedPath = "/Error/403";
-        options.LogoutPath = "/Admin/Logout";
-        
-        // Cookie settings for security
-        options.Cookie.SameSite = SameSiteMode.Lax;
-        options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = requireHttps 
-            ? CookieSecurePolicy.Always 
-            : CookieSecurePolicy.SameAsRequest;
-        
-        // Important for local development
-        options.Events = new CookieAuthenticationEvents
-        {
-            OnSigningIn = context =>
-            {
-                var userName = context.Principal?.Identity?.Name ?? "[unknown]";
-                Console.WriteLine($"User {userName} is signing in.");
-                return Task.CompletedTask;
-            },
-            OnSignedIn = context =>
-            {
-                var userName = context.Principal?.Identity?.Name ?? "[unknown]";
-                Console.WriteLine($"User {userName} has successfully signed in.");
-                return Task.CompletedTask;
-            },
-            OnValidatePrincipal = context =>
-            {
-                Console.WriteLine("Validating principal...");
-                return Task.CompletedTask;
-            },
-            OnRedirectToLogin = context =>
-            {
-                if (context.Request.Path.StartsWithSegments("/api") ||
-                    context.Request.ContentType?.ToLower().Contains("application/json") == true)
-                {
-                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    return Task.CompletedTask;
-                }
-                context.Response.Redirect(context.RedirectUri);
-                return Task.CompletedTask;
-            },
-            OnRedirectToAccessDenied = context =>
-            {
-                if (context.Request.Path.StartsWithSegments("/api") ||
-                    context.Request.ContentType?.ToLower().Contains("application/json") == true)
-                {
-                    context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                    return Task.CompletedTask;
-                }
-                context.Response.Redirect(context.RedirectUri);
-                return Task.CompletedTask;
-            }
-        };
-    });
 
 var app = builder.Build();
 
@@ -310,23 +309,26 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCookiePolicy();
 
-// Add rate limiting middleware
-app.UseRateLimiting();
-
-// Add request timing middleware
-app.UseRequestTiming();
-
 app.UseRouting();
 
 // Add global exception handling middleware
-app.UseGlobalExceptionHandler();
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
-app.UseSession();
+// Add authentication and authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Add request logging middleware
-app.UseRequestLogging();
+// Add session
+app.UseSession();
+
+// Add rate limiting middleware (after auth to allow authenticated requests to bypass)
+app.UseMiddleware<RateLimitingMiddleware>();
+
+// Add request timing middleware (after auth to include auth time)
+app.UseMiddleware<RequestTimingMiddleware>();
+
+// Add request logging middleware (after timing to include timing info)
+app.UseMiddleware<RequestLoggingMiddleware>();
 
 // Custom error handling middleware
 app.UseStatusCodePages(async context =>
@@ -370,21 +372,25 @@ app.MapControllers();
 app.MapRazorPages();
 
 // Health check endpoints
-app.MapHealthChecks("/healthz", new HealthCheckOptions
+app.MapHealthChecks("/health", new HealthCheckOptions
 {
+    Predicate = _ => true,
     AllowCachingResponses = false,
-    ResponseWriter = async (context, report) =>
-    {
-        var formatter = context.RequestServices.GetRequiredService<HealthCheckJsonFormatter>();
-        await formatter.WriteResponseAsync(context, report);
-    }
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
-// Minimal health check endpoint for load balancers and uptime monitors
-app.MapHealthChecks("/health/minimal", new HealthCheckOptions
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
 {
+    Predicate = (check) => check.Tags.Contains("ready"),
     AllowCachingResponses = false,
-    ResponseWriter = HealthCheckJsonFormatter.WriteMinimalResponseAsync
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+
+app.MapHealthChecks("/health/live", new HealthCheckOptions
+{
+    Predicate = (check) => check.Tags.Contains("live"),
+    AllowCachingResponses = false,
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
 // Legacy health check endpoint for backward compatibility

@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.IO;
+using System.IO;
+using PortfolioApp.Middleware; // RecyclableMemoryStreamManager için
 
 namespace PortfolioApp.Middleware
 {
@@ -12,7 +14,7 @@ namespace PortfolioApp.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<RequestLoggingMiddleware> _logger;
-        private readonly RecyclableMemoryStreamManager _recyclableMemoryStreamManager;
+        private readonly Microsoft.IO.RecyclableMemoryStreamManager _recyclableMemoryStreamManager;
         private const int ReadChunkBufferLength = 4096;
 
         public RequestLoggingMiddleware(RequestDelegate next, ILogger<RequestLoggingMiddleware> logger)

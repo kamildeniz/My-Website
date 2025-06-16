@@ -26,14 +26,15 @@ namespace PortfolioApp.Pages
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
         }
 
-        public string RequestId { get; set; } = string.Empty;
+        public string? RequestId { get; set; } = string.Empty;
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-        public int? StatusCode { get; set; }
+        public new int? StatusCode { get; set; }
         public string? ErrorMessage { get; set; }
         public string? ExceptionMessage { get; set; }
         public string? InnerExceptionMessage { get; set; }
         public string? StackTrace { get; set; }
         public string? Path { get; set; }
+        public bool ShowDevelopmentInfo => _environment.IsDevelopment();
 
         public IActionResult OnGet(int? statusCode = null)
         {

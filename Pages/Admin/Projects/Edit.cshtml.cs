@@ -16,7 +16,7 @@ namespace PortfolioApp.Pages.Admin.Projects
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
-        private readonly ILogger<EditModel> _logger;
+        private new readonly ILogger<EditModel> _logger;
 
         public EditModel(ApplicationDbContext context, IWebHostEnvironment environment, AuthService authService, ILogger<EditModel> logger)
             : base(authService, logger)

@@ -12,7 +12,7 @@ namespace PortfolioApp.Pages.Admin.Posts
     public class DeleteModel : AdminPageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<DeleteModel> _logger;
+        private new readonly ILogger<DeleteModel> _logger;
 
         public DeleteModel(ApplicationDbContext context, AuthService authService, ILogger<DeleteModel> logger)
             : base(authService, logger)

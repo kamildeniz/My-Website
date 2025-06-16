@@ -15,7 +15,7 @@ namespace PortfolioApp.Pages.Admin.Projects
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
-        private readonly ILogger<DeleteModel> _logger;
+        private new readonly ILogger<DeleteModel> _logger;
 
         public DeleteModel(ApplicationDbContext context, IWebHostEnvironment environment, AuthService authService, ILogger<DeleteModel> logger)
             : base(authService, logger)

@@ -13,7 +13,7 @@ namespace PortfolioApp.Pages.Admin.Posts
     public class IndexModel : AdminPageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<IndexModel> _logger;
+        private new readonly ILogger<IndexModel> _logger;
 
         public IList<BlogPost> BlogPosts { get; set; } = new List<BlogPost>();
 

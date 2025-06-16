@@ -10,7 +10,7 @@ namespace PortfolioApp.Pages.Admin
     public class DashboardModel : AdminPageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<DashboardModel> _logger;
+        private new readonly ILogger<DashboardModel> _logger;
 
         public int TotalBlogPosts { get; set; }
         public int TotalProjects { get; set; }

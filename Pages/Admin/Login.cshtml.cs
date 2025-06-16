@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using PortfolioApp.Services;
 using System;
@@ -15,8 +16,13 @@ namespace PortfolioApp.Pages.Admin
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
+        private const int MaxLoginAttempts = 5;
+        private static readonly TimeSpan LoginAttemptsWindow = TimeSpan.FromMinutes(15);
+        private const string LoginAttemptsCacheKey = "LoginAttempts_{0}";
+        
         private readonly AuthService _authService;
         private readonly ILogger<LoginModel> _logger;
+        private readonly IMemoryCache _cache;
 
         [BindProperty]
         [Required(ErrorMessage = "E-posta zorunludur")]
@@ -33,11 +39,18 @@ namespace PortfolioApp.Pages.Admin
         [TempData]
         public string ErrorMessage { get; set; } = string.Empty;
 
-        public LoginModel(AuthService authService, ILogger<LoginModel> logger)
+        public LoginModel(AuthService authService, ILogger<LoginModel> logger, IMemoryCache cache)
         {
             _authService = authService ?? throw new ArgumentNullException(nameof(authService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
+        
+        [TempData]
+        public string SuccessMessage { get; set; }
+        
+        [BindProperty]
+        public bool RememberMe { get; set; }
 
         public void OnGet(string? returnUrl = null)
         {
@@ -75,19 +88,23 @@ namespace PortfolioApp.Pages.Admin
             }
 
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var attempts = 0;
             
             try
             {
                 // Brute-force koruması
                 if (!string.IsNullOrEmpty(ipAddress) && 
-                    _cache.TryGetValue($"{LoginAttemptsCacheKey}{ipAddress}", out int attempts) && 
-                    attempts >= MaxLoginAttempts)
+                    _cache.TryGetValue($"{LoginAttemptsCacheKey}{ipAddress}", out int cachedAttempts))
                 {
-                    var remainingTime = _cache.Get<DateTime>($"{LoginAttemptsCacheKey}{ipAddress}_time");
-                    var timeLeft = remainingTime - DateTime.UtcNow;
-                    ModelState.AddModelError(string.Empty, 
-                        $"Çok fazla başarısız giriş denemesi. Lütfen {timeLeft.Minutes} dakika {timeLeft.Seconds} saniye sonra tekrar deneyin.");
-                    return Page();
+                    attempts = cachedAttempts;
+                    if (attempts >= MaxLoginAttempts)
+                    {
+                        var remainingTime = _cache.Get<DateTime>($"{LoginAttemptsCacheKey}{ipAddress}_time");
+                        var timeLeft = remainingTime - DateTime.UtcNow;
+                        ModelState.AddModelError(string.Empty, 
+                            $"Çok fazla başarısız giriş denemesi. Lütfen {timeLeft.Minutes} dakika {timeLeft.Seconds} saniye sonra tekrar deneyin.");
+                        return Page();
+                    }
                 }
 
                 // Giriş denemesini logla
@@ -102,14 +119,8 @@ namespace PortfolioApp.Pages.Admin
                     // Başarısız giriş denemesi sayısını artır
                     if (!string.IsNullOrEmpty(ipAddress))
                     {
-                        var cacheKey = $"{LoginAttemptsCacheKey}{ipAddress}";
-                        var attempts = _cache.GetOrCreate(cacheKey, entry =>
-                        {
-                            entry.AbsoluteExpirationRelativeToNow = LoginAttemptsWindow;
-                            return 0;
-                        });
-                        
                         attempts++;
+                        var cacheKey = $"{LoginAttemptsCacheKey}{ipAddress}";
                         _cache.Set(cacheKey, attempts, new MemoryCacheEntryOptions
                         {
                             AbsoluteExpirationRelativeToNow = LoginAttemptsWindow
@@ -131,6 +142,7 @@ namespace PortfolioApp.Pages.Admin
                     return Page();
                 }
 
+
                 // Başarılı girişte önbelleği temizle
                 if (!string.IsNullOrEmpty(ipAddress))
                 {
@@ -140,7 +152,28 @@ namespace PortfolioApp.Pages.Admin
 
                 _logger.LogInformation("Login successful for email: {Email}", Email);
 
+                // Kullanıcı için kimlik oluştur
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, Email),
+                    new Claim(ClaimTypes.Email, Email),
+                    new Claim(ClaimTypes.Role, "Administrator")
+                };
+
+                var claimsIdentity = new ClaimsIdentity(
+                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var authProperties = new AuthenticationProperties
+                {
+                    AllowRefresh = true,
+                    IsPersistent = RememberMe,
+                    ExpiresUtc = DateTimeOffset.UtcNow.Add(RememberMe ? TimeSpan.FromDays(30) : TimeSpan.FromHours(1))
+                };
+
                 // Başarılı giriş sonrası yönlendirme
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
                     authProperties);
                 
                 _logger.LogInformation("User signed in successfully");

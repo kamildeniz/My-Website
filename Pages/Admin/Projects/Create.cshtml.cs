@@ -16,7 +16,7 @@ namespace PortfolioApp.Pages.Admin.Projects
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
-        private readonly ILogger<CreateModel> _logger;
+        private new readonly ILogger<CreateModel> _logger;
 
         public CreateModel(ApplicationDbContext context, IWebHostEnvironment environment, AuthService authService, ILogger<CreateModel> logger)
             : base(authService, logger)

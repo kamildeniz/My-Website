@@ -12,7 +12,7 @@ namespace PortfolioApp.Pages.Admin.Posts
     public class EditModel : AdminPageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<EditModel> _logger;
+        private new readonly ILogger<EditModel> _logger;
 
         public EditModel(ApplicationDbContext context, AuthService authService, ILogger<EditModel> logger)
             : base(authService, logger)

@@ -13,7 +13,7 @@ namespace PortfolioApp.Pages.Admin.Projects
     public class IndexModel : AdminPageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<IndexModel> _logger;
+        private new readonly ILogger<IndexModel> _logger;
 
         public IndexModel(ApplicationDbContext context, AuthService authService, ILogger<IndexModel> logger)
             : base(authService, logger)
