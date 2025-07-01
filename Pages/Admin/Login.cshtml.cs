@@ -13,7 +13,9 @@ using System.Threading.Tasks;
 
 namespace PortfolioApp.Pages.Admin
 {
+
     [AllowAnonymous]
+
     public class LoginModel : PageModel
     {
         private const int MaxLoginAttempts = 5;
@@ -82,6 +84,8 @@ namespace PortfolioApp.Pages.Admin
 
         public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken = default)
         {
+            _logger.LogInformation("OnPostAsync tetiklendi");
+            _logger.LogInformation("ModelState geçerli mi?: {valid}", ModelState.IsValid);
             if (!ModelState.IsValid)
             {
                 return Page();

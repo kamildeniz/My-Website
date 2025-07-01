@@ -1,0 +1,60 @@
+2025-06-30 15:16:39.3061 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-06-30 15:16:39.6542 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-06-30 15:16:39.7187 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 15:16:39.7755 Info Configuration initialized.
+2025-06-30 15:16:39.8134 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 15:20:41.9473 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-06-30 15:20:42.1430 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-06-30 15:20:42.1854 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 15:20:42.2273 Info Configuration initialized.
+2025-06-30 15:20:42.2347 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 15:22:14.6844 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-06-30 15:22:14.7218 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-06-30 15:22:14.7521 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 15:22:14.7846 Info Configuration initialized.
+2025-06-30 15:22:14.7975 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 15:23:20.6949 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-06-30 15:23:20.8304 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-06-30 15:23:20.8752 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 15:23:21.0010 Info Configuration initialized.
+2025-06-30 15:23:21.0010 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 15:27:43.0321 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-06-30 15:27:43.2720 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-06-30 15:27:43.6559 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 15:27:43.8661 Info Configuration initialized.
+2025-06-30 15:27:43.8753 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 15:35:25.9639 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-06-30 15:35:26.1666 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-06-30 15:35:26.1985 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 15:35:26.2529 Info Configuration initialized.
+2025-06-30 15:35:26.2529 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 15:47:08.8925 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-06-30 15:47:09.0802 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-06-30 15:47:09.1364 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 15:47:09.2420 Info Configuration initialized.
+2025-06-30 15:47:09.2420 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 17:24:52.1507 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-06-30 17:24:53.8136 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-06-30 17:24:54.0919 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 17:24:54.3900 Info Configuration initialized.
+2025-06-30 17:24:54.4318 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 17:34:31.1311 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-06-30 17:34:31.3322 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-06-30 17:34:31.3682 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-06-30 17:34:31.4604 Info Configuration initialized.
+2025-06-30 17:34:31.4604 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-01 01:31:03.5061 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-01 01:31:03.6525 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-01 01:31:03.7595 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-01 01:31:03.8330 Info Configuration initialized.
+2025-07-01 01:31:03.8330 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-01 01:46:30.7058 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-01 01:46:31.3268 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-01 01:46:31.4101 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-01 01:46:31.5134 Info Configuration initialized.
+2025-07-01 01:46:31.5134 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-01 02:46:09.7326 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-01 02:46:10.5150 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-01 02:46:10.5514 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-01 02:46:11.0458 Info Configuration initialized.
+2025-07-01 02:46:11.0538 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=C:\Users\Kamil\source\repos\kamildeniz\My-Website\bin\Debug\net8.0\NLog.config

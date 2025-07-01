@@ -31,7 +31,7 @@
                         </div>
                     }
 
-                    <form method="post" id="loginForm" class="needs-validation" novalidate>
+                    <form method="post" asp-page="/Admin/Login" id="loginForm" class="needs-validation" novalidate>
                         <input type="hidden" asp-for="ReturnUrl" />
                         
                         <div class="mb-4">
@@ -44,7 +44,7 @@
                                 </span>
                                 <input type="email" 
                                        class="form-control form-control-lg" 
-                                       id="email" 
+                                   
                                        asp-for="Email" 
                                        placeholder="ornek@mail.com" 
                                        required>
@@ -65,7 +65,7 @@
                                 </span>
                                 <input type="password" 
                                        class="form-control form-control-lg" 
-                                       id="password" 
+                                       
                                        asp-for="Password" 
                                        placeholder="••••••••" 
                                        required
@@ -117,7 +117,7 @@
 
                                 // Debug
                                 console.log("Form submitted");
-                                console.log("Email:", form.querySelector("#email").value);
+                                console.log("Email:", form.querySelector("[name='Email']").value);
 
                                 // Show loading
                                 const btn = form.querySelector('button[type="submit"]');

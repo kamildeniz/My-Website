@@ -32,7 +32,9 @@ using PortfolioApp.Services;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Logging.ClearProviders();
+builder.Logging.SetMinimumLevel(LogLevel.Trace);
+builder.Host.UseNLog();
 // Add services to the container.
 builder.Services.AddRazorPages(options =>
 {
@@ -156,6 +158,7 @@ builder.Services.Configure<RateLimitingOptions>(builder.Configuration.GetSection
 // Register services
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<PortfolioApp.Services.HealthCheckService>();
+builder.Services.AddScoped<BlogService>();
 
 // Add API controllers
 builder.Services.AddControllers()
