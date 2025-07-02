@@ -37,6 +37,12 @@ namespace PortfolioApp.Services
         {
             _logger.LogInformation("Login attempt for email: {email}", email);
 
+            if (_httpContextAccessor.HttpContext == null)
+            {
+                _logger.LogError("HttpContext is null");
+                return false;
+            }
+
             var admin = await _dbContext.AdminUsers.FirstOrDefaultAsync(a => a.Email == email);
             if (admin == null)
             {
@@ -74,22 +80,36 @@ namespace PortfolioApp.Services
             _logger.LogInformation("Login successful for {email}", email);
             return true;
         }
+
         public async Task LogoutAsync()
         {
             var httpContext = _httpContextAccessor.HttpContext;
             if (httpContext != null)
             {
                 await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                _logger.LogInformation("User signed out successfully");
+            }
+            else
+            {
+                _logger.LogWarning("HttpContext was null during logout");
             }
         }
 
         public Task<bool> IsAuthenticatedAsync()
         {
             var httpContext = _httpContextAccessor.HttpContext;
-            return Task.FromResult(httpContext?.User?.Identity?.IsAuthenticated ?? false);
+            var result = httpContext?.User?.Identity?.IsAuthenticated ?? false;
+            _logger.LogInformation("Authentication check result: {auth}", result);
+            return Task.FromResult(result);
         }
+
         private bool VerifyPassword(string password, string hashBase64, string saltBase64)
         {
+            _logger.LogInformation("Verifying password...");
+            _logger.LogInformation("Password input: {Password}", password);
+            _logger.LogInformation("Hash (short): {Hash}", hashBase64.Substring(0, 10));
+            _logger.LogInformation("Salt (short): {Salt}", saltBase64.Substring(0, 10));
+
             var salt = Convert.FromBase64String(saltBase64);
             var hash = Convert.FromBase64String(hashBase64);
 
@@ -98,9 +118,14 @@ namespace PortfolioApp.Services
 
             for (int i = 0; i < KeySize; i++)
             {
-                if (computedHash[i] != hash[i]) return false;
+                if (computedHash[i] != hash[i])
+                {
+                    _logger.LogWarning("Password verification failed at byte index: {Index}", i);
+                    return false;
+                }
             }
 
+            _logger.LogInformation("Password verified successfully");
             return true;
         }
     }
