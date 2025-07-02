@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PortfolioApp.Models;
 
 namespace PortfolioApp.Data.Seeders
 {
