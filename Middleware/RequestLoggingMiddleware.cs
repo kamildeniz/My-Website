@@ -1,12 +1,12 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.IO;
-using System.IO;
-using PortfolioApp.Middleware; // RecyclableMemoryStreamManager için
 
 namespace PortfolioApp.Middleware
 {
@@ -14,8 +14,7 @@ namespace PortfolioApp.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<RequestLoggingMiddleware> _logger;
-        private readonly Microsoft.IO.RecyclableMemoryStreamManager _recyclableMemoryStreamManager;
-        private const int ReadChunkBufferLength = 4096;
+        private readonly RecyclableMemoryStreamManager _recyclableMemoryStreamManager;
 
         public RequestLoggingMiddleware(RequestDelegate next, ILogger<RequestLoggingMiddleware> logger)
         {
@@ -26,111 +25,115 @@ namespace PortfolioApp.Middleware
 
         public async Task Invoke(HttpContext context)
         {
-            // Skip logging for these paths
-            if (context.Request.Path.StartsWithSegments("/health") || 
+            if (context.Request.Path.StartsWithSegments("/health") ||
                 context.Request.Path.StartsWithSegments("/favicon.ico") ||
                 context.Request.Path.StartsWithSegments("/_framework") ||
-                context.Request.Path.StartsWithSegments("/_blazor"))
+                context.Request.Path.StartsWithSegments("/_blazor") ||
+                context.Request.Path.Value.EndsWith(".js") ||
+                context.Request.Path.Value.EndsWith(".css"))
             {
                 await _next(context);
                 return;
             }
 
-            var request = await FormatRequest(context.Request);
-            
-            // Copy the original response body stream
+            var requestInfo = await FormatRequest(context.Request);
             var originalBodyStream = context.Response.Body;
-            
-            using (var responseBody = _recyclableMemoryStreamManager.GetStream())
+
+            await using var responseBody = _recyclableMemoryStreamManager.GetStream();
+            context.Response.Body = responseBody;
+
+            try
             {
-                context.Response.Body = responseBody;
-                
-                try
+                await _next(context);
+
+                var responseInfo = await FormatResponse(context.Response);
+
+                var level = context.Response.StatusCode switch
                 {
-                    await _next(context);
-                    
-                    var response = await FormatResponse(context.Response);
-                    
-                    var logMessage = $"Request: {request}\nResponse: {response}";
-                    
-                    // Log based on status code
-                    if (context.Response.StatusCode >= 500)
-                    {
-                        _logger.LogError(logMessage);
-                    }
-                    else if (context.Response.StatusCode >= 400)
-                    {
-                        _logger.LogWarning(logMessage);
-                    }
-                    else
-                    {
-                        _logger.LogInformation(logMessage);
-                    }
-                    
-                    await responseBody.CopyToAsync(originalBodyStream);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"An unhandled exception occurred while processing the request: {request}");
-                    throw;
-                }
-                finally
-                {
-                    context.Response.Body = originalBodyStream;
-                }
+                    >= 500 => LogLevel.Error,
+                    >= 400 => LogLevel.Warning,
+                    _ => LogLevel.Information
+                };
+
+                _logger.Log(level, "HTTP Request: {@RequestInfo} | HTTP Response: {@ResponseInfo}", requestInfo, responseInfo);
+
+                await responseBody.CopyToAsync(originalBodyStream);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unhandled exception occurred. Request Information: {@RequestInfo}", requestInfo);
+                // We must rethrow the exception so that the global exception handler can process it.
+                throw;
+            }
+            finally
+            {
+                context.Response.Body = originalBodyStream;
             }
         }
 
-        private async Task<string> FormatRequest(HttpRequest request)
+        private async Task<object> FormatRequest(HttpRequest request)
         {
-            request.EnableBuffering();
-            
-            using (var reader = new StreamReader(
-                request.Body,
-                encoding: Encoding.UTF8,
-                detectEncodingFromByteOrderMarks: false,
-                leaveOpen: true))
+            var body = "[No Body]";
+            try
             {
-                var body = await reader.ReadToEndAsync();
-                request.Body.Position = 0;
-                
-                var headers = new StringBuilder();
-                foreach (var header in request.Headers)
+                if (request.Body.CanRead && request.ContentLength > 0)
                 {
-                    headers.AppendLine($"{header.Key}: {header.Value}");
+                    request.EnableBuffering();
+                    using var reader = new StreamReader(request.Body, Encoding.UTF8, detectEncodingFromByteOrderMarks: false, leaveOpen: true);
+                    body = await reader.ReadToEndAsync();
+                    request.Body.Position = 0;
                 }
-                
-                return $"\n{request.Scheme} {request.Host}{request.Path} {request.QueryString}\n" +
-                       $"Headers:\n{headers}\n" +
-                       $"Body: {body}";
             }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Could not read request body.");
+                body = "[Could not read body]";
+            }
+
+            return new
+            {
+                Scheme = request.Scheme,
+                Host = request.Host.Value,
+                Path = request.Path.Value,
+                QueryString = request.QueryString.Value,
+                Headers = request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString()),
+                Body = body
+            };
         }
 
-        private async Task<string> FormatResponse(HttpResponse response)
+        private async Task<object> FormatResponse(HttpResponse response)
         {
-            response.Body.Seek(0, SeekOrigin.Begin);
-            
-            string text = await new StreamReader(response.Body, Encoding.UTF8).ReadToEndAsync();
-            response.Body.Seek(0, SeekOrigin.Begin);
-            
-            var headers = new StringBuilder();
-            foreach (var header in response.Headers)
+            var body = "[No Body]";
+            try
             {
-                headers.AppendLine($"{header.Key}: {string.Join(", ", header.Value)}");
+                if (response.Body.CanRead && response.Body.Length > 0)
+                {
+                    response.Body.Seek(0, SeekOrigin.Begin);
+                    using var reader = new StreamReader(response.Body, Encoding.UTF8, detectEncodingFromByteOrderMarks: false, leaveOpen: true);
+                    body = await reader.ReadToEndAsync();
+                    response.Body.Seek(0, SeekOrigin.Begin);
+                }
             }
-            
-            return $"Status Code: {response.StatusCode}\n" +
-                   $"Headers:\n{headers}" +
-                   $"Body: {text}";
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Could not read response body.");
+                body = "[Could not read body]";
+            }
+
+            return new
+            {
+                StatusCode = response.StatusCode,
+                Headers = response.Headers.ToDictionary(h => h.Key, h => h.Value.ToString()),
+                Body = body
+            };
         }
     }
-}
 
-// Extension method used to add the middleware to the HTTP request pipeline.
-public static class RequestLoggingMiddlewareExtensions
-{
-    public static IApplicationBuilder UseRequestLogging(this IApplicationBuilder builder)
+    public static class RequestLoggingMiddlewareExtensions
     {
-        return builder.UseMiddleware<RequestLoggingMiddleware>();
+        public static IApplicationBuilder UseRequestLogging(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<RequestLoggingMiddleware>();
+        }
     }
 }

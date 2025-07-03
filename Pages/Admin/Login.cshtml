@@ -103,24 +103,6 @@
                     </p>
                 </div>
 
-                @section Scripts {
-                    <script>
-                        document.addEventListener("DOMContentLoaded", function () {
-                            const form = document.getElementById("loginForm");
-                            form.addEventListener("submit", function (e) {
-                                if (!form.checkValidity()) {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                }
-                                form.classList.add("was-validated");
-
-                                const btn = form.querySelector('button[type="submit"]');
-                                btn.disabled = true;
-                                btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Giriş Yapılıyor...';
-                            });
-                        });
-                    </script>
-                }
 
             </div>
         </div>

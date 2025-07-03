@@ -1,8 +1,12 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PortfolioApp.Data;
 using PortfolioApp.Models;
 using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,13 +17,15 @@ namespace PortfolioApp.Services
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly ILogger<AuthService> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private const int KeySize = 32;
         private const int Iterations = 100_000;
 
-        public AuthService(ApplicationDbContext dbContext, ILogger<AuthService> logger)
+        public AuthService(ApplicationDbContext dbContext, ILogger<AuthService> logger, IHttpContextAccessor httpContextAccessor)
         {
             _dbContext = dbContext;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<AdminUser?> ValidateCredentialsAsync(string email, string password)
@@ -40,6 +46,36 @@ namespace PortfolioApp.Services
             }
 
             return user;
+        }
+
+        public async Task LoginAsync(AdminUser user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true
+            };
+
+            await _httpContextAccessor.HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                authProperties);
+        }
+
+        public Task<bool> IsAuthenticatedAsync()
+        {
+            return Task.FromResult(_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated);
+        }
+
+        public async Task LogoutAsync()
+        {
+            await _httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
         private bool VerifyPassword(string password, string hashBase64, string saltBase64)
