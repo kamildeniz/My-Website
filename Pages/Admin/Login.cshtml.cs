@@ -86,84 +86,60 @@ namespace PortfolioApp.Pages.Admin
 
         public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("Login işlemi başlatıldı. Email: {Email}", Email);
+            _logger.LogInformation("Login started for email: {Email}", Email);
 
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("ModelState geçersiz. Email: {Email}", Email);
+                _logger.LogWarning("ModelState invalid.");
                 return Page();
             }
 
-            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown IP";
-            var cacheKey = $"{LoginAttemptsCacheKey}{ipAddress}";
-            var blockKey = $"{cacheKey}_time";
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            var cacheKey = string.Format(LoginAttemptsCacheKey, ipAddress);
 
-            try
+            if (_cache.TryGetValue(cacheKey, out int attempts) && attempts >= MaxLoginAttempts)
             {
-                if (_cache.TryGetValue(cacheKey, out int attempts) && attempts >= MaxLoginAttempts)
-                {
-                    var blockUntil = _cache.Get<DateTime>(blockKey);
-                    var timeLeft = blockUntil - DateTime.UtcNow;
-                    ModelState.AddModelError(string.Empty, $"Çok fazla başarısız giriş denemesi. {timeLeft.Minutes} dk {timeLeft.Seconds} sn sonra tekrar deneyin.");
-                    _logger.LogWarning("IP bloklandı. IP: {IP}, Kalan Süre: {Time}", ipAddress, timeLeft);
-                    return Page();
-                }
-
-                _logger.LogInformation("Giriş denemesi. IP: {IP}, Email: {Email}", ipAddress, Email);
-
-                var loginSuccess = await _authService.LoginAsync(Email, Password, RememberMe);
-
-                if (!loginSuccess)
-                {
-                    attempts++;
-                    _cache.Set(cacheKey, attempts, TimeSpan.FromMinutes(15));
-
-                    if (attempts >= MaxLoginAttempts)
-                    {
-                        _cache.Set(blockKey, DateTime.UtcNow.AddMinutes(15), TimeSpan.FromMinutes(15));
-                        _logger.LogWarning("Çok sayıda hatalı giriş. IP: {IP}, Email: {Email}", ipAddress, Email);
-                    }
-
-                    ModelState.AddModelError(string.Empty, "Geçersiz e-posta veya şifre.");
-                    return Page();
-                }
-
-                // Giriş başarılı, önbelleği temizle
-                _cache.Remove(cacheKey);
-                _cache.Remove(blockKey);
-                _logger.LogInformation("Giriş başarılı. Email: {Email}", Email);
-
-                // Claims oluştur
-                var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, Email),
-            new Claim(ClaimTypes.Email, Email),
-            new Claim(ClaimTypes.Role, "Administrator")
-        };
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = RememberMe,
-                    ExpiresUtc = DateTimeOffset.UtcNow.Add(RememberMe ? TimeSpan.FromDays(30) : TimeSpan.FromHours(1))
-                };
-
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-                _logger.LogInformation("Kimlik doğrulama ve cookie atama başarılı. Email: {Email}", Email);
-
-                return Url.IsLocalUrl(ReturnUrl) ? LocalRedirect(ReturnUrl) : RedirectToPage("/Admin/Dashboard");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Login sırasında beklenmeyen hata. Email: {Email}", Email);
-                ErrorMessage = "Bir hata oluştu. Lütfen tekrar deneyin.";
+                var blockUntil = _cache.Get<DateTime>($"{cacheKey}_time");
+                var timeLeft = blockUntil - DateTime.UtcNow;
+                ModelState.AddModelError(string.Empty, $"Çok fazla başarısız giriş. {timeLeft.Minutes} dk {timeLeft.Seconds} sn bekleyin.");
                 return Page();
             }
-            finally
+
+            var admin = await _authService.ValidateCredentialsAsync(Email, Password);
+            if (admin == null)
             {
-                _logger.LogInformation("=== Login işlemi sona erdi ===");
+                attempts++;
+                _cache.Set(cacheKey, attempts, LoginAttemptsWindow);
+
+                if (attempts >= MaxLoginAttempts)
+                    _cache.Set($"{cacheKey}_time", DateTime.UtcNow.Add(LoginAttemptsWindow), LoginAttemptsWindow);
+
+                ModelState.AddModelError(string.Empty, "Geçersiz e-posta veya şifre.");
+                return Page();
             }
+
+            _cache.Remove(cacheKey);
+            _cache.Remove($"{cacheKey}_time");
+
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, admin.Id.ToString()),
+        new Claim(ClaimTypes.Name, admin.Email),
+        new Claim(ClaimTypes.Email, admin.Email),
+        new Claim(ClaimTypes.Role, "Administrator")
+    };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = RememberMe,
+                ExpiresUtc = DateTimeOffset.UtcNow.Add(RememberMe ? TimeSpan.FromDays(30) : TimeSpan.FromHours(1))
+            };
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+            _logger.LogInformation("User signed in: {Email}", Email);
+
+            return Url.IsLocalUrl(ReturnUrl) ? LocalRedirect(ReturnUrl) : RedirectToPage("/Admin/Dashboard");
         }
 
     }

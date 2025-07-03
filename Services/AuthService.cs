@@ -1,115 +1,49 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PortfolioApp.Data;
 using PortfolioApp.Models;
 using System;
-using System.Collections.Generic;
-using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace PortfolioApp.Services
 {
     public class AuthService
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ILogger<AuthService> _logger;
         private readonly ApplicationDbContext _dbContext;
-
+        private readonly ILogger<AuthService> _logger;
         private const int KeySize = 32;
         private const int Iterations = 100_000;
 
-        public AuthService(
-            IHttpContextAccessor httpContextAccessor,
-            ILogger<AuthService> logger,
-            ApplicationDbContext dbContext)
+        public AuthService(ApplicationDbContext dbContext, ILogger<AuthService> logger)
         {
-            _httpContextAccessor = httpContextAccessor;
-            _logger = logger;
             _dbContext = dbContext;
+            _logger = logger;
         }
 
-        public async Task<bool> LoginAsync(string email, string password, bool rememberMe = false)
+        public async Task<AdminUser?> ValidateCredentialsAsync(string email, string password)
         {
-            _logger.LogInformation("Login attempt for email: {email}", email);
+            _logger.LogInformation("ValidateCredentials: Trying to authenticate {Email}", email);
 
-            if (_httpContextAccessor.HttpContext == null)
+            var user = await _dbContext.AdminUsers.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
             {
-                _logger.LogError("HttpContext is null");
-                return false;
+                _logger.LogWarning("User not found: {Email}", email);
+                return null;
             }
 
-            var admin = await _dbContext.AdminUsers.FirstOrDefaultAsync(a => a.Email == email);
-            if (admin == null)
+            if (!VerifyPassword(password, user.PasswordHash, user.PasswordSalt))
             {
-                _logger.LogWarning("No user found with email: {email}", email);
-                return false;
+                _logger.LogWarning("Invalid password for user: {Email}", email);
+                return null;
             }
 
-            if (!VerifyPassword(password, admin.PasswordHash, admin.PasswordSalt))
-            {
-                _logger.LogWarning("Invalid password for user: {email}", email);
-                return false;
-            }
-
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, admin.Id.ToString()),
-                new Claim(ClaimTypes.Email, admin.Email),
-                new Claim(ClaimTypes.Role, "Administrator")
-            };
-
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProps = new AuthenticationProperties
-            {
-                IsPersistent = rememberMe,
-                ExpiresUtc = rememberMe ? DateTimeOffset.UtcNow.AddDays(30) : DateTimeOffset.UtcNow.AddMinutes(30),
-                AllowRefresh = true
-            };
-
-            await _httpContextAccessor.HttpContext.SignOutAsync();
-            await _httpContextAccessor.HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(identity),
-                authProps);
-
-            _logger.LogInformation("Login successful for {email}", email);
-            return true;
-        }
-
-        public async Task LogoutAsync()
-        {
-            var httpContext = _httpContextAccessor.HttpContext;
-            if (httpContext != null)
-            {
-                await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                _logger.LogInformation("User signed out successfully");
-            }
-            else
-            {
-                _logger.LogWarning("HttpContext was null during logout");
-            }
-        }
-
-        public Task<bool> IsAuthenticatedAsync()
-        {
-            var httpContext = _httpContextAccessor.HttpContext;
-            var result = httpContext?.User?.Identity?.IsAuthenticated ?? false;
-            _logger.LogInformation("Authentication check result: {auth}", result);
-            return Task.FromResult(result);
+            return user;
         }
 
         private bool VerifyPassword(string password, string hashBase64, string saltBase64)
         {
-            _logger.LogInformation("Verifying password...");
-            _logger.LogInformation("Password input: {Password}", password);
-            _logger.LogInformation("Hash (short): {Hash}", hashBase64.Substring(0, 10));
-            _logger.LogInformation("Salt (short): {Salt}", saltBase64.Substring(0, 10));
-
             var salt = Convert.FromBase64String(saltBase64);
             var hash = Convert.FromBase64String(hashBase64);
 
@@ -118,14 +52,9 @@ namespace PortfolioApp.Services
 
             for (int i = 0; i < KeySize; i++)
             {
-                if (computedHash[i] != hash[i])
-                {
-                    _logger.LogWarning("Password verification failed at byte index: {Index}", i);
-                    return false;
-                }
+                if (computedHash[i] != hash[i]) return false;
             }
 
-            _logger.LogInformation("Password verified successfully");
             return true;
         }
     }
