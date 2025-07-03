@@ -18,8 +18,8 @@ namespace PortfolioApp.Services
         private readonly ApplicationDbContext _dbContext;
         private readonly ILogger<AuthService> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private const int KeySize = 32;
-        private const int Iterations = 100_000;
+        public const int KeySize = 32;
+        public const int Iterations = 100_000;
 
         public AuthService(ApplicationDbContext dbContext, ILogger<AuthService> logger, IHttpContextAccessor httpContextAccessor)
         {
@@ -30,21 +30,26 @@ namespace PortfolioApp.Services
 
         public async Task<AdminUser?> ValidateCredentialsAsync(string email, string password)
         {
-            _logger.LogInformation("ValidateCredentials: Trying to authenticate {Email}", email);
+            _logger.LogInformation("--- [AuthService] Attempting to validate credentials for {Email} ---", email);
 
             var user = await _dbContext.AdminUsers.FirstOrDefaultAsync(u => u.Email == email);
             if (user == null)
             {
-                _logger.LogWarning("User not found: {Email}", email);
+                _logger.LogWarning("[AuthService] User not found in database: {Email}", email);
                 return null;
             }
+            _logger.LogInformation("[AuthService] User found. ID: {UserId}, Stored Salt: {Salt}, Stored Hash: {Hash}", user.Id, user.PasswordSalt, user.PasswordHash);
 
-            if (!VerifyPassword(password, user.PasswordHash, user.PasswordSalt))
+            bool isPasswordValid = VerifyPassword(password, user.PasswordHash, user.PasswordSalt);
+            _logger.LogInformation("[AuthService] Password verification result for {Email}: {Result}", email, isPasswordValid);
+
+            if (!isPasswordValid)
             {
-                _logger.LogWarning("Invalid password for user: {Email}", email);
+                _logger.LogWarning("!!! [AuthService] Password verification FAILED for user: {Email} !!!", email);
                 return null;
             }
 
+            _logger.LogInformation("--- [AuthService] Password verification SUCCEEDED for user: {Email} ---", email);
             return user;
         }
 
@@ -76,6 +81,14 @@ namespace PortfolioApp.Services
         public async Task LogoutAsync()
         {
             await _httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+
+        public static (string hash, string salt) HashPassword(string password)
+        {
+            var saltBytes = RandomNumberGenerator.GetBytes(KeySize);
+            using var pbkdf2 = new Rfc2898DeriveBytes(password, saltBytes, Iterations, HashAlgorithmName.SHA256);
+            var hashBytes = pbkdf2.GetBytes(KeySize);
+            return (Convert.ToBase64String(hashBytes), Convert.ToBase64String(saltBytes));
         }
 
         private bool VerifyPassword(string password, string hashBase64, string saltBase64)

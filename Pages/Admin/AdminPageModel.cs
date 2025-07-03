@@ -22,46 +22,18 @@ namespace PortfolioApp.Pages.Admin
             _logger = logger;
         }
 
-        public virtual async Task<IActionResult> OnGetAsync()
+        public virtual Task<IActionResult> OnGetAsync()
         {
             _logger.LogInformation($"AdminPageModel.OnGetAsync called for {GetType().Name}");
-            
-            if (User.Identity == null || !User.Identity.IsAuthenticated)
-            {
-                _logger.LogWarning("User not authenticated, redirecting to login");
-                return RedirectToLogin();
-            }
-
-            if (!await _authService.IsAuthenticatedAsync())
-            {
-                _logger.LogWarning("AuthService reports user not authenticated, signing out");
-                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                return RedirectToLogin();
-            }
-
             _logger.LogInformation($"User {User.Identity.Name} is authenticated");
-            return Page();
+            return Task.FromResult<IActionResult>(Page());
         }
 
-        public virtual async Task<IActionResult> OnGetAsync(int? id)
+        public virtual Task<IActionResult> OnGetAsync(int? id)
         {
             _logger.LogInformation($"AdminPageModel.OnGetAsync(int?) called for {GetType().Name} with id: {id}");
-            
-            if (User.Identity == null || !User.Identity.IsAuthenticated)
-            {
-                _logger.LogWarning("User not authenticated, redirecting to login");
-                return RedirectToLogin();
-            }
-
-            if (!await _authService.IsAuthenticatedAsync())
-            {
-                _logger.LogWarning("AuthService reports user not authenticated, signing out");
-                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                return RedirectToLogin();
-            }
-
             _logger.LogInformation($"User {User.Identity.Name} is authenticated");
-            return Page();
+            return Task.FromResult<IActionResult>(Page());
         }
 
         protected IActionResult RedirectToLogin()

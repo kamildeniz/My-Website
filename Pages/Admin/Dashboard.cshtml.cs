@@ -24,20 +24,12 @@ namespace PortfolioApp.Pages.Admin
             _logger = logger;
         }
 
-        public override async Task<IActionResult> OnGetAsync()
+        public async Task OnGetAsync()
         {
-            var authResult = await base.OnGetAsync();
-            if (authResult is not PageResult)
-            {
-                return authResult;
-            }
-
             TotalBlogPosts = await _context.BlogPosts.CountAsync();
             TotalProjects = await _context.Projects.CountAsync();
             PublishedPosts = await _context.BlogPosts.CountAsync(p => p.IsPublished);
             TotalComments = 0; // You can implement comments later
-
-            return Page();
         }
     }
 }

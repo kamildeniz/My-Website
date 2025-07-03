@@ -45,8 +45,12 @@ try
         options.Conventions.AuthorizeFolder("/Admin");
         options.Conventions.AllowAnonymousToPage("/Admin/Login");
         options.Conventions.AllowAnonymousToPage("/Error");
-    })
-    .AddApplicationPart(typeof(Program).Assembly);
+    });
+
+
+    builder.Services.AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "DataProtection-Keys")))
+        .SetApplicationName("PortfolioApp");
 
     builder.Services.AddMemoryCache();
     builder.Services.AddHttpContextAccessor();
@@ -229,49 +233,43 @@ try
         ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
     });
 
+    app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+
     app.UseHttpsRedirection();
     app.UseStaticFiles();
-    app.UseCookiePolicy();
+
     app.UseRouting();
-    app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+
+    // Sorun tespiti için geçici olarak devre dışı bırakıldı
+    // app.UseMiddleware<RequestTimingMiddleware>();
+    // app.UseMiddleware<RequestLoggingMiddleware>();
+    // app.UseMiddleware<RateLimitingMiddleware>();
+
+    app.UseSession();
+
     app.UseAuthentication();
     app.UseAuthorization();
-    app.UseSession();
-    app.UseMiddleware<RateLimitingMiddleware>();
-    app.UseMiddleware<RequestTimingMiddleware>();
-    app.UseMiddleware<RequestLoggingMiddleware>();
 
-    app.UseStatusCodePages(async context =>
-    {
-        var response = context.HttpContext.Response;
-        var request = context.HttpContext.Request;
-        var statusCodeLogger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+    // app.UseStatusCodePages(async context =>
+    // {
+    //     var response = context.HttpContext.Response;
+    //     var request = context.HttpContext.Request;
+    //     var statusCodeLogger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
 
-        if (response.StatusCode == (int)HttpStatusCode.Unauthorized)
-        {
-            statusCodeLogger.LogWarning("Unauthorized access to {Path}", request.Path);
-            response.Redirect($"/Admin/Login?returnUrl={Uri.EscapeDataString(request.Path + request.QueryString)}");
-            return;
-        }
-        if (response.StatusCode >= 400)
-        {
-            statusCodeLogger.LogWarning("Error {StatusCode} occurred for {Path}", response.StatusCode, request.Path);
-            response.Redirect($"/Error?statusCode={response.StatusCode}");
-        }
-    });
+    //     if (response.StatusCode == (int)HttpStatusCode.Unauthorized)
+    //     {
+    //         statusCodeLogger.LogWarning("Unauthorized access to {Path}", request.Path);
+    //         response.Redirect($"/Admin/Login?returnUrl={Uri.EscapeDataString(request.Path + request.QueryString)}");
+    //         return;
+    //     }
+    //     if (response.StatusCode >= 400)
+    //     {
+    //         statusCodeLogger.LogWarning("Error {StatusCode} occurred for {Path}", response.StatusCode, request.Path);
+    //         response.Redirect($"/Error?statusCode={response.StatusCode}");
+    //     }
+    // });
 
-    app.Use(async (context, next) =>
-    {
-        await next();
-        if (context.Response.StatusCode == 404 && !context.Response.HasStarted)
-        {
-            var notFoundLogger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-            notFoundLogger.LogWarning("404 Not Found: {Path}", context.Request.Path);
-            context.Request.Path = "/Error";
-            context.Response.StatusCode = 404;
-            await next();
-        }
-    });
+
 
     app.MapControllers();
     app.MapRazorPages();

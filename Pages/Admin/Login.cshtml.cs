@@ -58,86 +58,45 @@ namespace PortfolioApp.Pages.Admin
 
         public void OnGet(string? returnUrl = null)
         {
-            // Çıkış yapıldıysa başarı mesajı göster
-            if (TempData["LogoutMessage"] is string logoutMessage)
-            {
-                SuccessMessage = logoutMessage;
-            }
-
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
             }
-
-            ReturnUrl = returnUrl;
-
-            // Hatalı giriş denemelerini kontrol et
-            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-            if (!string.IsNullOrEmpty(ipAddress) &&
-                _cache.TryGetValue($"{LoginAttemptsCacheKey}{ipAddress}", out int attempts) &&
-                attempts >= MaxLoginAttempts)
-            {
-                var remainingTime = _cache.Get<DateTime>($"{LoginAttemptsCacheKey}{ipAddress}_time");
-                var timeLeft = remainingTime - DateTime.UtcNow;
-                ModelState.AddModelError(string.Empty,
-                    $"Çok fazla başarısız giriş denemesi. Lütfen {timeLeft.Minutes} dakika {timeLeft.Seconds} saniye sonra tekrar deneyin.");
-            }
+            ReturnUrl = returnUrl ?? "/Admin/Dashboard";
         }
 
         public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation("OnPostAsync called. Attempting to log in user {Email}", Email);
-            _logger.LogInformation("Login started for email: {Email}", Email);
+            _logger.LogInformation("--- [Login Page] POST request received. ---");
+            _logger.LogInformation("[Login Page] Attempting login for Email: {Email}", Email);
 
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Model state is invalid for user {Email}.", Email);
-                _logger.LogWarning("ModelState invalid.");
+                _logger.LogWarning("[Login Page] ModelState is INVALID. Returning page.");
                 return Page();
             }
+            _logger.LogInformation("[Login Page] ModelState is VALID.");
 
-            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-            var cacheKey = string.Format(LoginAttemptsCacheKey, ipAddress);
+            var user = await _authService.ValidateCredentialsAsync(Email, Password);
 
-            if (_cache.TryGetValue(cacheKey, out int attempts) && attempts >= MaxLoginAttempts)
+            if (user != null)
             {
-                var blockUntil = _cache.Get<DateTime>($"{cacheKey}_time");
-                var timeLeft = blockUntil - DateTime.UtcNow;
-                ModelState.AddModelError(string.Empty, $"Çok fazla başarısız giriş. {timeLeft.Minutes} dk {timeLeft.Seconds} sn bekleyin.");
-                return Page();
+                _logger.LogInformation("[Login Page] AuthService.ValidateCredentialsAsync SUCCEEDED for user ID {UserId}.", user.Id);
+                _logger.LogInformation("[Login Page] Proceeding to sign in user...");
+
+                await _authService.LoginAsync(user);
+
+                _logger.LogInformation("[Login Page] SignInAsync completed. User should be authenticated.");
+
+                var returnUrl = ReturnUrl ?? Url.Content("~/Admin/Dashboard");
+                _logger.LogInformation("[Login Page] Login successful. Redirecting to final destination: {ReturnUrl}", returnUrl);
+
+                return LocalRedirect(returnUrl);
             }
 
-            var admin = await _authService.ValidateCredentialsAsync(Email, Password);
-            if (admin == null)
-            {
-                _logger.LogWarning("Invalid credentials for user {Email}.", Email);
-                attempts++;
-                _cache.Set(cacheKey, attempts, LoginAttemptsWindow);
-
-                if (attempts >= MaxLoginAttempts)
-                    _cache.Set($"{cacheKey}_time", DateTime.UtcNow.Add(LoginAttemptsWindow), LoginAttemptsWindow);
-
-                ModelState.AddModelError(string.Empty, "Geçersiz e-posta veya şifre.");
-                return Page();
-            }
-
-            _cache.Remove(cacheKey);
-            _cache.Remove($"{cacheKey}_time");
-
-            await _authService.LoginAsync(admin);
-            _logger.LogInformation("User {Email} logged in successfully.", Email);
-            _logger.LogInformation("User signed in: {Email}", Email);
-
-            _logger.LogInformation("ReturnUrl is '{ReturnUrl}'. IsLocalUrl: {IsLocalUrl}", ReturnUrl, Url.IsLocalUrl(ReturnUrl));
-
-            if (Url.IsLocalUrl(ReturnUrl))
-            {
-                _logger.LogInformation("Redirecting to local ReturnUrl: {ReturnUrl}", ReturnUrl);
-                return LocalRedirect(ReturnUrl);
-            }
-
-            _logger.LogInformation("Redirecting to dashboard.");
-            return RedirectToPage("/Admin/Dashboard");
+            _logger.LogWarning("!!! [Login Page] AuthService.ValidateCredentialsAsync FAILED for {Email}. !!!", Email);
+            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            return Page();
         }
 
     }

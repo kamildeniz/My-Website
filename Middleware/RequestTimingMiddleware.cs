@@ -40,9 +40,13 @@ namespace PortfolioApp.Middleware
             try
             {
                 // Add a unique identifier to the response headers
+                // Add a unique identifier to the response headers if it doesn't exist
                 context.Response.OnStarting(() =>
                 {
-                    context.Response.Headers.Add("X-Request-ID", context.TraceIdentifier);
+                    if (!context.Response.Headers.ContainsKey("X-Request-ID"))
+                    {
+                        context.Response.Headers.Add("X-Request-ID", context.TraceIdentifier);
+                    }
                     return Task.CompletedTask;
                 });
 
