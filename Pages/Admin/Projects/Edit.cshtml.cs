@@ -32,26 +32,19 @@ namespace PortfolioApp.Pages.Admin.Projects
         [BindProperty]
         public IFormFile? ImageFile { get; set; }
 
-        public override async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var authResult = await base.OnGetAsync();
-            if (authResult is not PageResult)
-            {
-                return authResult;
-            }
+            Project = await _context.Projects.FirstOrDefaultAsync(m => m.Id == id);
 
-            var project = await _context.Projects.FirstOrDefaultAsync(m => m.Id == id);
-            if (project == null)
+            if (Project == null)
             {
                 return NotFound();
             }
-            
-            Project = project;
             return Page();
         }
 

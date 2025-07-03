@@ -24,20 +24,11 @@ namespace PortfolioApp.Pages.Admin.Posts
             _logger = logger;
         }
 
-        public override async Task<IActionResult> OnGetAsync()
+        public async Task OnGetAsync()
         {
-            var authResult = await base.OnGetAsync();
-            if (authResult is not PageResult)
-            {
-                return authResult;
-            }
-
             BlogPosts = await _context.BlogPosts
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
-
-
-            return Page();
         }
     }
 }

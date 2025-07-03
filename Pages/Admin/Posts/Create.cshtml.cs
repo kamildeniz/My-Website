@@ -27,19 +27,11 @@ namespace PortfolioApp.Pages.Admin.Posts
         [BindProperty]
         public BlogPost BlogPost { get; set; } = new BlogPost();
 
-        public override async Task<IActionResult> OnGetAsync()
+        public void OnGet()
         {
-            var authResult = await base.OnGetAsync();
-            if (authResult is not PageResult)
-            {
-                return authResult;
-            }
-
             BlogPost.CreatedAt = DateTime.Now;
             BlogPost.Author = User.Identity?.Name ?? "Admin";
             BlogPost.IsPublished = true;
-            
-            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()

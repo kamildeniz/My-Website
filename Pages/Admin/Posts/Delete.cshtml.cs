@@ -24,17 +24,11 @@ namespace PortfolioApp.Pages.Admin.Posts
         [BindProperty]
         public BlogPost? BlogPost { get; set; }
 
-        public override async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
             {
                 return NotFound();
-            }
-
-            var authResult = await base.OnGetAsync();
-            if (authResult is not PageResult)
-            {
-                return authResult;
             }
 
             BlogPost = await _context.BlogPosts.FirstOrDefaultAsync(m => m.Id == id);

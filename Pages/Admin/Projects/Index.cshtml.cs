@@ -24,19 +24,11 @@ namespace PortfolioApp.Pages.Admin.Projects
 
         public IList<Project> Projects { get; set; } = new List<Project>();
 
-        public override async Task<IActionResult> OnGetAsync()
+        public async Task OnGetAsync()
         {
-            var authResult = await base.OnGetAsync();
-            if (authResult is not PageResult)
-            {
-                return authResult;
-            }
-
             Projects = await _context.Projects
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
-
-            return Page();
         }
     }
 }

@@ -27,17 +27,16 @@ namespace PortfolioApp.Pages.Admin.Posts
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
-            {
+            { 
                 return NotFound();
             }
 
-            var blogpost = await _context.BlogPosts.FirstOrDefaultAsync(m => m.Id == id);
-            if (blogpost == null)
+            BlogPost = await _context.BlogPosts.FindAsync(id);
+
+            if (BlogPost == null)
             {
                 return NotFound();
             }
-            
-            BlogPost = blogpost;
             return Page();
         }
 

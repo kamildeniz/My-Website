@@ -240,10 +240,9 @@ try
 
     app.UseRouting();
 
-    // Sorun tespiti için geçici olarak devre dışı bırakıldı
-    // app.UseMiddleware<RequestTimingMiddleware>();
-    // app.UseMiddleware<RequestLoggingMiddleware>();
-    // app.UseMiddleware<RateLimitingMiddleware>();
+    app.UseMiddleware<RequestTimingMiddleware>();
+    app.UseMiddleware<RequestLoggingMiddleware>();
+    app.UseMiddleware<RateLimitingMiddleware>();
 
     app.UseSession();
 

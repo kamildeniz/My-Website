@@ -32,16 +32,9 @@ namespace PortfolioApp.Pages.Admin.Projects
         [BindProperty]
         public IFormFile? ImageFile { get; set; }
 
-        public override async Task<IActionResult> OnGetAsync()
+        public void OnGet()
         {
-            var authResult = await base.OnGetAsync();
-            if (authResult is not PageResult)
-            {
-                return authResult;
-            }
-
             Project.CreatedAt = DateTime.Now;
-            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
