@@ -24,30 +24,52 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         @{
-                            var currentPage = ViewContext.RouteData.Values["Page"]?.ToString() ?? string.Empty;
+                            var currentPage = ViewContext.RouteData.Values["Page"]?.ToString() ?? "";
                         }
                         <li class="nav-item">
-                            <a class="nav-link @(currentPage == "/Index" ? "active" : "")" 
-                               asp-page="/Index">Ana Sayfa</a>
+                            <a class="nav-link @(currentPage.EndsWith("/Index") ? "active" : "")" asp-page="/Index">Ana Sayfa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(currentPage == "/About" ? "active" : "")" 
-                               asp-page="/About">Hakkımda</a>
+                            <a class="nav-link @(currentPage.EndsWith("/About") ? "active" : "")" asp-page="/About">Hakkımda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(currentPage == "/Projects/Index" ? "active" : "")" 
-                               asp-page="/Projects/Index">Projeler</a>
+                            <a class="nav-link @(currentPage.Contains("/Projects") ? "active" : "")" asp-page="/Projects/Index">Projeler</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(currentPage == "/Blog/Index" ? "active" : "")" 
-                               asp-page="/Blog/Index">Blog</a>
+                            <a class="nav-link @(currentPage.Contains("/Blog") ? "active" : "")" asp-page="/Blog/Index">Blog</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(currentPage == "/Contact" ? "active" : "")" 
-                               asp-page="/Contact">İletişim</a>
+                            <a class="nav-link @(currentPage.EndsWith("/Contact") ? "active" : "")" asp-page="/Contact">İletişim</a>
                         </li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarUserDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-circle me-1"></i> @User.Identity.Name
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarUserDropdown">
+                                    <li><a class="dropdown-item" asp-page="/Admin/Dashboard"><i class="bi bi-speedometer2 me-2"></i>Yönetim Paneli</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-page="/Admin/Logout" method="post" class="d-inline">
+                                            <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right me-2"></i>Çıkış Yap</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-page="/Admin/Login">
+                                    <i class="bi bi-box-arrow-in-right me-1"></i> Giriş Yap
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

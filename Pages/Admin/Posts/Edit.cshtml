@@ -14,7 +14,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-12">
         <form method="post">
             <input type="hidden" asp-for="BlogPost.Id" />
             <input type="hidden" asp-for="BlogPost.CreatedAt" />
@@ -41,8 +41,8 @@
             </div>
             
             <div class="mb-3">
-                <label asp-for="BlogPost.Content" class="form-label">İçerik (Markdown)</label>
-                <textarea asp-for="BlogPost.Content" class="form-control" rows="10"></textarea>
+                <label asp-for="BlogPost.Content" class="form-label">İçerik</label>
+                <textarea id="content-editor" asp-for="BlogPost.Content" class="form-control"></textarea>
                 <span asp-validation-for="BlogPost.Content" class="text-danger"></span>
             </div>
             
@@ -60,42 +60,30 @@
             </div>
             
             <div class="mb-3">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-save"></i> Güncelle
-                </button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Güncelle</button>
+                <a href="/blog/@Model.BlogPost.Slug" class="btn btn-info" target="_blank"><i class="bi bi-eye"></i> Önizleme</a>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash"></i> Sil</button>
                 <a asp-page="Index" class="btn btn-secondary">İptal</a>
             </div>
         </form>
     </div>
-    
-    <div class="col-md-4">
-        <div class="card mb-3">
-            <div class="card-header">
-                <h5 class="card-title mb-0">İstatistikler</h5>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Yazıyı Sil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="card-body">
-                <p class="mb-1"><strong>Oluşturulma:</strong> @Model.BlogPost.CreatedAt.ToString("dd.MM.yyyy HH:mm")</p>
-                @if (Model.BlogPost.UpdatedAt.HasValue)
-                {
-                    <p class="mb-1"><strong>Son Güncelleme:</strong> @Model.BlogPost.UpdatedAt.Value.ToString("dd.MM.yyyy HH:mm")</p>
-                }
-                <p class="mb-1"><strong>Yazar:</strong> @Model.BlogPost.Author</p>
+            <div class="modal-body">
+                Bu yazıyı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
             </div>
-        </div>
-        
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Hızlı Erişim</h5>
-            </div>
-            <div class="card-body">
-                <a href="/blog/@Model.BlogPost.Slug" class="btn btn-outline-primary btn-sm w-100 mb-2" target="_blank">
-                    <i class="bi bi-eye"></i> Önizleme
-                </a>
-                <form method="post" asp-page-handler="Delete" asp-route-id="@Model.BlogPost.Id" 
-                      onsubmit="return confirm('Bu yazıyı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.');">
-                    <button type="submit" class="btn btn-outline-danger btn-sm w-100">
-                        <i class="bi bi-trash"></i> Sil
-                    </button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <form method="post" asp-page-handler="Delete" asp-route-id="@Model.BlogPost.Id">
+                    <button type="submit" class="btn btn-danger">Evet, Sil</button>
                 </form>
             </div>
         </div>
@@ -104,4 +92,18 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            tinymce.init({
+                selector: '#content-editor',
+                plugins: 'code table lists image link media wordcount fullscreen preview',
+                toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image link media | code | fullscreen preview',
+                height: 600,
+                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+            });
+        });
+    </script>
 }

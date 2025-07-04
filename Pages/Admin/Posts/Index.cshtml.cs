@@ -15,7 +15,10 @@ namespace PortfolioApp.Pages.Admin.Posts
         private readonly ApplicationDbContext _context;
         private new readonly ILogger<IndexModel> _logger;
 
-        public IList<BlogPost> BlogPosts { get; set; } = new List<BlogPost>();
+                public IList<BlogPost> BlogPosts { get; set; } = new List<BlogPost>();
+
+        [BindProperty(SupportsGet = true)]
+        public string SearchString { get; set; }
 
         public IndexModel(ApplicationDbContext context, AuthService authService, ILogger<IndexModel> logger) 
             : base(authService, logger)
@@ -24,11 +27,18 @@ namespace PortfolioApp.Pages.Admin.Posts
             _logger = logger;
         }
 
-        public async Task OnGetAsync()
+                public async Task OnGetAsync()
         {
-            BlogPosts = await _context.BlogPosts
-                .OrderByDescending(p => p.CreatedAt)
-                .ToListAsync();
+            var postsQuery = from p in _context.BlogPosts
+                             select p;
+
+            if (!string.IsNullOrEmpty(SearchString))
+            {
+                postsQuery = postsQuery.Where(s => s.Title.Contains(SearchString) 
+                                               || s.Excerpt.Contains(SearchString));
+            }
+
+            BlogPosts = await postsQuery.OrderByDescending(p => p.CreatedAt).ToListAsync();
         }
     }
 }

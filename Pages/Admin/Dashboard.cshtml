@@ -6,59 +6,159 @@
 }
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Yönetim Paneli</h1>
+    <h1 class="h2">Gösterge Paneli</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a asp-page="/Admin/Posts/Create" class="btn btn-sm btn-outline-primary me-2">
+            <i class="bi bi-plus-circle"></i> Yeni Yazı Ekle
+        </a>
+        <a asp-page="/Admin/Projects/Create" class="btn btn-sm btn-outline-success">
+            <i class="bi bi-plus-circle"></i> Yeni Proje Ekle
+        </a>
+    </div>
 </div>
 
+<!-- Stat Cards -->
 <div class="row">
-    <div class="col-md-6">
-        <div class="card mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body">
-                <h5 class="card-title">Blog Yönetimi</h5>
-                <p class="card-text">Blog yazılarınızı yönetin, yeni yazılar ekleyin veya mevcut yazıları düzenleyin.</p>
-                <a href="/Admin/Posts" class="btn btn-primary">Blog Yazılarına Git</a>
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Toplam Yazı</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalBlogPosts</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-file-post fs-2 text-gray-300"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
             <div class="card-body">
-                <h5 class="card-title">Proje Yönetimi</h5>
-                <p class="card-text">Portföyünüzdeki projeleri yönetin, yeni projeler ekleyin veya mevcut projeleri düzenleyin.</p>
-                <a href="/Admin/Projects" class="btn btn-primary">Projelere Git</a>
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Toplam Proje</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalProjects</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-kanban fs-2 text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Yayınlanan Yazılar</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.PublishedPosts</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-check-circle fs-2 text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Tarih & Saat</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@DateTime.Now.ToString("dd.MM.yyyy HH:mm")</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-clock fs-2 text-gray-300"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="card mt-4">
-    <div class="card-header">
-        <h5 class="mb-0">Sistem Bilgileri</h5>
+<!-- Recent Content -->
+<div class="row">
+    <!-- Son Blog Yazıları -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Son Blog Yazıları</h6>
+                <a asp-page="/Admin/Posts/Index">Tümünü Gör &rarr;</a>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.RecentBlogPosts.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover m-0">
+                            <tbody>
+                                @foreach (var post in Model.RecentBlogPosts)
+                                {
+                                    <tr>
+                                        <td>
+                                            @post.Title
+                                            <br />
+                                            <small class="text-muted">@post.CreatedAt.ToString("dd MMMM yyyy")</small>
+                                        </td>
+                                        <td class="text-end align-middle">
+                                            <a asp-page="/Admin/Posts/Edit" asp-route-id="@post.Id" class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-pencil"></i> Düzenle
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-center text-muted p-3">Henüz blog yazısı yok.</p>
+                }
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card bg-light mb-3">
-                    <div class="card-body">
-                        <h6 class="card-title">Toplam Blog Yazısı</h6>
-                        <p class="h2 text-center">@Model.TotalBlogPosts</p>
-                    </div>
-                </div>
+
+    <!-- Son Projeler -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-success">Son Projeler</h6>
+                <a asp-page="/Admin/Projects/Index">Tümünü Gör &rarr;</a>
             </div>
-            <div class="col-md-4">
-                <div class="card bg-light mb-3">
-                    <div class="card-body">
-                        <h6 class="card-title">Toplam Proje</h6>
-                        <p class="h2 text-center">@Model.TotalProjects</p>
+            <div class="card-body p-0">
+                @if (Model.RecentProjects.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover m-0">
+                            <tbody>
+                                @foreach (var project in Model.RecentProjects)
+                                {
+                                    <tr>
+                                        <td>
+                                            @project.Title
+                                            <br />
+                                            <small class="text-muted">@project.CreatedAt.ToString("dd MMMM yyyy")</small>
+                                        </td>
+                                        <td class="text-end align-middle">
+                                            <a asp-page="/Admin/Projects/Edit" asp-route-id="@project.Id" class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-pencil"></i> Düzenle
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card bg-light mb-3">
-                    <div class="card-body">
-                        <h6 class="card-title">Son Giriş</h6>
-                        <p class="h6 text-center">@DateTime.Now.ToString("dd.MM.yyyy HH:mm")</p>
-                    </div>
-                </div>
+                }
+                else
+                {
+                    <p class="text-center text-muted p-3">Henüz proje yok.</p>
+                }
             </div>
         </div>
     </div>

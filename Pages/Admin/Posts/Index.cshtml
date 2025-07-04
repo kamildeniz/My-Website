@@ -13,6 +13,18 @@
     </div>
 </div>
 
+<div class="mb-3">
+    <form asp-page="./Index" method="get" class="row g-3 align-items-center">
+        <div class="col-auto">
+            <input type="text" class="form-control" name="SearchString" value="@Model.SearchString" placeholder="Başlık veya özette ara...">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Ara</button>
+            <a asp-page="./Index" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Temizle</a>
+        </div>
+    </form>
+</div>
+
 @if (Model.BlogPosts.Any())
 {
     <div class="table-responsive">

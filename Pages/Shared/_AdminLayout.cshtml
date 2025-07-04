@@ -379,13 +379,19 @@
                     İçerik Yönetimi
                 </div>
 
-                <div class="nav-item @(isActive("Projects") ? "active" : "")">
-                    <a class="nav-link" href="/Admin/Projects">
-                        <i class="bi bi-folder"></i>
-                        <span>Projeler</span>
+                <div class="nav-item @(isActive("Posts") ? "active" : "")">
+                    <a class="nav-link" href="/Admin/Posts">
+                        <i class="bi bi-file-post"></i>
+                        <span>Blog Yazıları</span>
                     </a>
                 </div>
 
+                <div class="nav-item @(isActive("Projects") ? "active" : "")">
+                    <a class="nav-link" href="/Admin/Projects">
+                        <i class="bi bi-kanban"></i>
+                        <span>Projeler</span>
+                    </a>
+                </div>
 
                 <!-- Divider -->
                 <hr class="sidebar-divider">

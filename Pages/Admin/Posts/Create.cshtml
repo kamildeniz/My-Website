@@ -14,7 +14,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-12">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             
@@ -37,8 +37,8 @@
             </div>
             
             <div class="mb-3">
-                <label asp-for="BlogPost.Content" class="form-label">İçerik (Markdown)</label>
-                <textarea asp-for="BlogPost.Content" class="form-control" rows="10"></textarea>
+                <label asp-for="BlogPost.Content" class="form-label">İçerik</label>
+                <textarea id="content-editor" asp-for="BlogPost.Content" class="form-control"></textarea>
                 <span asp-validation-for="BlogPost.Content" class="text-danger"></span>
             </div>
             
@@ -63,46 +63,40 @@
             </div>
         </form>
     </div>
-    
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Yardım</h5>
-            </div>
-            <div class="card-body">
-                <h6>Markdown Kullanımı</h6>
-                <ul class="small">
-                    <li><code># Başlık</code> - Başlık</li>
-                    <li><code>## Alt Başlık</code> - Alt başlık</li>
-                    <li><code>**kalın**</code> - <strong>kalın</strong></li>
-                    <li><code>*italik*</code> - <em>italik</em></li>
-                    <li><code>- Madde işareti</code> - Liste öğesi</li>
-                </ul>
-            </div>
-        </div>
-    </div>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    
+
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js" referrerpolicy="origin"></script>
+
     <script>
-        // Generate slug from title
-        document.getElementById('BlogPost_Title').addEventListener('blur', function() {
-            const title = this.value;
-            const slugInput = document.getElementById('BlogPost_Slug');
-            
-            if (!slugInput.value) {
-                // Generate slug from title
-                const slug = title
-                    .toLowerCase()
-                    .replace(/[^\w\s-]/g, '') // Remove special chars
-                    .replace(/\s+/g, '-')     // Replace spaces with -
-                    .replace(/--+/g, '-')     // Replace multiple - with single -
-                    .trim();
+        document.addEventListener('DOMContentLoaded', function () {
+            tinymce.init({
+                selector: '#content-editor',
+                plugins: 'code table lists image link media wordcount fullscreen preview',
+                toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image link media | code | fullscreen preview',
+                height: 600,
+                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+            });
+
+            // Generate slug from title
+            document.getElementById('BlogPost_Title').addEventListener('blur', function() {
+                const title = this.value;
+                const slugInput = document.getElementById('BlogPost_Slug');
                 
-                slugInput.value = slug;
-            }
+                if (!slugInput.value) {
+                    const slug = title
+                        .toLowerCase()
+                        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove accents
+                        .replace(/[^\w\s-]/g, '') // Remove special chars
+                        .replace(/\s+/g, '-')     // Replace spaces with -
+                        .replace(/--+/g, '-')     // Replace multiple - with single -
+                        .trim();
+                    
+                    slugInput.value = slug;
+                }
+            });
         });
     </script>
 }
