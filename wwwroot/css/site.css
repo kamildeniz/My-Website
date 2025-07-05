@@ -647,6 +647,17 @@ blockquote {
     padding-top: 100%;
 }
 
+/* SB-ADMIN OVERRIDES */
+.sidebar, .navbar-nav {
+    list-style: none !important;
+    padding-left: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+#wrapper {
+    width: 100% !important;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;

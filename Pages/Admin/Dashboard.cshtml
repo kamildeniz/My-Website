@@ -1,79 +1,92 @@
 @page
 @model PortfolioApp.Pages.Admin.DashboardModel
 @{
-    ViewData["Title"] = "Yönetim Paneli";
+    ViewData["Title"] = "Gösterge Paneli";
     Layout = "_AdminLayout";
 }
 
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Gösterge Paneli</h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
-        <a asp-page="/Admin/Posts/Create" class="btn btn-sm btn-outline-primary me-2">
-            <i class="bi bi-plus-circle"></i> Yeni Yazı Ekle
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Gösterge Paneli</h1>
+    <div>
+        <a asp-page="/Admin/Posts/Create" class="btn btn-primary btn-sm shadow-sm">
+            <i class="fas fa-plus-circle fa-sm text-white-50"></i> Yeni Yazı Ekle
         </a>
-        <a asp-page="/Admin/Projects/Create" class="btn btn-sm btn-outline-success">
-            <i class="bi bi-plus-circle"></i> Yeni Proje Ekle
+        <a asp-page="/Admin/Projects/Create" class="btn btn-success btn-sm shadow-sm">
+            <i class="fas fa-plus-circle fa-sm text-white-50"></i> Yeni Proje Ekle
         </a>
     </div>
 </div>
 
-<!-- Stat Cards -->
+<!-- Content Row -->
 <div class="row">
+
+    <!-- Toplam Yazı Card -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Toplam Yazı</div>
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Toplam Yazı</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalBlogPosts</div>
                     </div>
                     <div class="col-auto">
-                        <i class="bi bi-file-post fs-2 text-gray-300"></i>
+                        <i class="fas fa-file-alt fa-2x text-gray-300"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Toplam Proje Card -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-success shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Toplam Proje</div>
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Toplam Proje</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalProjects</div>
                     </div>
                     <div class="col-auto">
-                        <i class="bi bi-kanban fs-2 text-gray-300"></i>
+                        <i class="fas fa-project-diagram fa-2x text-gray-300"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Yayınlanan Yazılar Card -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-info shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Yayınlanan Yazılar</div>
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Yayınlanan Yazılar
+                        </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.PublishedPosts</div>
                     </div>
                     <div class="col-auto">
-                        <i class="bi bi-check-circle fs-2 text-gray-300"></i>
+                        <i class="fas fa-check-circle fa-2x text-gray-300"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Tarih & Saat Card -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-warning shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Tarih & Saat</div>
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Tarih & Saat</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">@DateTime.Now.ToString("dd.MM.yyyy HH:mm")</div>
                     </div>
                     <div class="col-auto">
-                        <i class="bi bi-clock fs-2 text-gray-300"></i>
+                        <i class="fas fa-clock fa-2x text-gray-300"></i>
                     </div>
                 </div>
             </div>
@@ -105,8 +118,8 @@
                                             <small class="text-muted">@post.CreatedAt.ToString("dd MMMM yyyy")</small>
                                         </td>
                                         <td class="text-end align-middle">
-                                            <a asp-page="/Admin/Posts/Edit" asp-route-id="@post.Id" class="btn btn-sm btn-outline-secondary">
-                                                <i class="bi bi-pencil"></i> Düzenle
+                                            <a asp-page="/Admin/Posts/Edit" asp-route-id="@post.Id" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i> Düzenle
                                             </a>
                                         </td>
                                     </tr>
@@ -145,8 +158,8 @@
                                             <small class="text-muted">@project.CreatedAt.ToString("dd MMMM yyyy")</small>
                                         </td>
                                         <td class="text-end align-middle">
-                                            <a asp-page="/Admin/Projects/Edit" asp-route-id="@project.Id" class="btn btn-sm btn-outline-secondary">
-                                                <i class="bi bi-pencil"></i> Düzenle
+                                            <a asp-page="/Admin/Projects/Edit" asp-route-id="@project.Id" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i> Düzenle
                                             </a>
                                         </td>
                                     </tr>

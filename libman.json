@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "bootstrap@4.6.2",
+      "destination": "wwwroot/lib/bootstrap"
+    },
+    {
+      "library": "jquery@3.6.0",
+      "destination": "wwwroot/lib/jquery"
+    },
+    {
+      "library": "jquery-easing@1.4.1",
+      "destination": "wwwroot/lib/jquery-easing"
+    },
+    {
+      "library": "startbootstrap-sb-admin-2@4.1.4",
+      "destination": "wwwroot/lib/sb-admin-2"
+    },
+    {
+      "library": "sweetalert2@11.7.1",
+      "destination": "wwwroot/lib/sweetalert2"
+    },
+    {
+      "library": "font-awesome@5.15.4",
+      "destination": "wwwroot/lib/fontawesome"
+    }
+  ]
+}
