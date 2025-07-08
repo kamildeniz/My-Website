@@ -21,6 +21,7 @@ using PortfolioApp.Filters;
 using PortfolioApp.Middleware;
 using PortfolioApp.Options;
 using PortfolioApp.Services;
+using PortfolioApp.Models;
 using System;
 using System.IO;
 using System.Linq;
@@ -65,6 +66,10 @@ try
             : CookieSecurePolicy.None;
         options.Cookie.SameSite = SameSiteMode.Lax;
     });
+
+    // Add database context
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
     builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(options =>
@@ -131,6 +136,7 @@ try
     builder.Services.AddScoped<AuthService>();
     builder.Services.AddScoped<PortfolioApp.Services.HealthCheckService>();
     builder.Services.AddScoped<BlogService>();
+    builder.Services.AddScoped<ProfileService>();
     builder.Services.AddControllers().AddApplicationPart(Assembly.GetExecutingAssembly());
 
     builder.Configuration
@@ -272,6 +278,28 @@ try
 
     app.MapControllers();
     app.MapRazorPages();
+
+    // Initialize the database
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        try
+        {
+            var context = services.GetRequiredService<ApplicationDbContext>();
+            // This will create the database if it doesn't exist and apply any pending migrations
+            context.Database.EnsureCreated();
+            
+            // You can also use this if you prefer to explicitly apply migrations:
+            // context.Database.Migrate();
+            
+            logger.Info("Database initialized successfully");
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "An error occurred while initializing the database");
+        }
+    }
+
     app.MapHealthChecks("/health", new HealthCheckOptions
     {
         Predicate = _ => true,

@@ -22,10 +22,9 @@
         <div class="row align-items-center">
             <div class="col-lg-6 mb-4 mb-lg-0">
                 <div class="p-3 p-lg-5">
-                    <h2 class="h3 mb-4">Merhaba, ben Kamil Deniz</h2>
-                    <p class="lead">Junior Full Stack Developer</p>
-                    <p>Yazılım geliştirme dünyasına olan tutkum ve sürekli öğrenme isteğimle kendimi bu alanda geliştirmeye devam ediyorum. Özellikle web teknolojileri ve yazılım geliştirme konularına büyük bir ilgi duyuyorum.</p>
-                    <p>Bu süreçte edindiğim bilgi ve deneyimleri bu web sitesi aracılığıyla paylaşmayı hedefliyorum. Aynı zamanda yeni projeler geliştirerek kendimi sürekli geliştirmeye çalışıyorum.</p>
+                    <h2 class="h3 mb-4">Merhaba, ben @Model.Profile?.FullName</h2>
+                    <p class="lead">@Model.Profile?.Title</p>
+                    <p>@Model.Profile?.AboutMe</p>
                     <div class="mt-4">
                         <a href="/contact" class="btn btn-primary me-2">
                             <i class="bi bi-envelope me-2"></i>İletişime Geç
@@ -38,7 +37,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="p-3">
-                    <img src="/images/profile-placeholder.jpg" alt="Profil Resmi" class="img-fluid rounded-3 shadow">
+                    <img src="@Model.Profile?.ProfileImageUrl" alt="@Model.Profile?.FullName" class="img-fluid rounded-3 shadow">
                 </div>
             </div>
         </div>

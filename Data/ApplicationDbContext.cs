@@ -14,6 +14,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<AdminUser> AdminUsers { get; set; }
     public DbSet<Project> Projects { get; set; } = null!;
     public DbSet<BlogPost> BlogPosts { get; set; } = null!;
+    public DbSet<Profile> Profiles { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

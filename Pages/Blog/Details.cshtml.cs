@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -34,49 +36,67 @@ namespace PortfolioApp.Pages.Blog
         {
             if (string.IsNullOrEmpty(slug))
             {
+                _logger.LogWarning("Empty slug provided to Blog/Details");
                 return NotFound();
             }
 
             try
             {
-                // Get the blog post by slug
+                _logger.LogInformation("Attempting to load blog post with slug: {Slug}", slug);
+                
+                // Get the blog post by slug with tracking disabled for better performance
                 BlogPost = await _context.BlogPosts
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(p => p.Slug == slug && p.IsPublished);
 
                 if (BlogPost == null)
                 {
-                    _logger.LogWarning("Blog post with slug {Slug} not found", slug);
+                    _logger.LogWarning("Blog post with slug {Slug} not found or not published", slug);
                     return NotFound();
                 }
 
-                // Get related posts (posts with similar tags)
-                if (BlogPost.Tags != null && BlogPost.Tags.Count > 0)
+                _logger.LogInformation("Successfully loaded blog post with ID: {BlogPostId}", BlogPost.Id);
+
+                try 
                 {
-                    // Find posts that share at least one tag with the current post
-                    RelatedPosts = await _context.BlogPosts
-                        .Where(p => p.Id != BlogPost.Id && 
-                                  p.IsPublished &&
-                                  p.Tags != null && 
-                                  p.Tags.Any(t => BlogPost.Tags.Contains(t)))
-                        .OrderByDescending(p => p.CreatedAt)
-                        .Take(3)
-                        .ToListAsync();
+                    // Get related posts (posts with similar tags)
+                    if (BlogPost.Tags != null && BlogPost.Tags.Count > 0)
+                    {
+                        _logger.LogInformation("Looking for related posts with matching tags");
+                        RelatedPosts = await _context.BlogPosts
+                            .AsNoTracking()
+                            .Where(p => p.Id != BlogPost.Id && 
+                                      p.IsPublished &&
+                                      p.Tags != null && 
+                                      p.Tags.Any(t => BlogPost.Tags.Contains(t)))
+                            .OrderByDescending(p => p.CreatedAt)
+                            .Take(3)
+                            .ToListAsync();
+                    }
+
+                    // If not enough related posts, get the most recent ones
+                    if (RelatedPosts.Count < 3)
+                    {
+                        _logger.LogInformation("Found {Count} related posts, looking for more", RelatedPosts.Count);
+                        var additionalPosts = await _context.BlogPosts
+                            .AsNoTracking()
+                            .Where(p => p.Id != BlogPost.Id && p.IsPublished)
+                            .OrderByDescending(p => p.CreatedAt)
+                            .Take(3 - RelatedPosts.Count)
+                            .ToListAsync();
+
+                        // Add only the ones that aren't already in the list
+                        RelatedPosts = RelatedPosts
+                            .Union(additionalPosts.Where(p => !RelatedPosts.Any(rp => rp.Id == p.Id)))
+                            .Take(3)
+                            .ToList();
+                    }
                 }
-
-                // If not enough related posts, get the most recent ones
-                if (RelatedPosts.Count < 3)
+                catch (Exception ex)
                 {
-                    var additionalPosts = await _context.BlogPosts
-                        .Where(p => p.Id != BlogPost.Id && p.IsPublished)
-                        .OrderByDescending(p => p.CreatedAt)
-                        .Take(3 - RelatedPosts.Count)
-                        .ToListAsync();
-
-                    // Add only the ones that aren't already in the list
-                    RelatedPosts = RelatedPosts
-                        .Union(additionalPosts.Where(p => !RelatedPosts.Any(rp => rp.Id == p.Id)))
-                        .Take(3)
-                        .ToList();
+                    _logger.LogError(ex, "Error loading related posts for blog post {BlogPostId}", BlogPost.Id);
+                    // Continue execution with empty related posts
+                    RelatedPosts = new List<BlogPost>();
                 }
 
                 return Page();
@@ -84,8 +104,12 @@ namespace PortfolioApp.Pages.Blog
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error loading blog post with slug {Slug}", slug);
-                // In a production app, you might want to show an error page
-                return StatusCode(500);
+                // Return a 404 instead of 500 when the post isn't found
+                if (ex is InvalidOperationException || ex is NullReferenceException)
+                {
+                    return NotFound();
+                }
+                return StatusCode(500, "An error occurred while loading the blog post. Please try again later.");
             }
         }
     }

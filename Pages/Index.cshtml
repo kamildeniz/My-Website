@@ -9,9 +9,9 @@
     <div class="container py-5">
         <div class="row align-items-center">
             <div class="col-lg-6">
-                <h1 class="display-4 fw-bold mb-3">Merhaba, Ben <span class="text-primary">Kamil Deniz</span></h1>
-                <p class="lead mb-4">Junior Yazılım Geliştirici</p>
-                <p class="mb-4">Yazılım dünyasında kendimi sürekli geliştirmeye ve yeni teknolojiler öğrenmeye tutkulu bir yazılım geliştiriciyim. Temiz kod yazmaya ve kullanıcı dostu uygulamalar geliştirmeye özen gösteriyorum.</p>
+                <h1 class="display-4 fw-bold mb-3">Merhaba, Ben <span class="text-primary">@Model.Profile?.FullName</span></h1>
+                <p class="lead mb-4">@Model.Profile?.Title</p>
+                <p class="mb-4">@Model.Profile?.Description</p>
                 <div class="d-flex gap-3">
                     <a href="/About" class="btn btn-primary btn-lg">Hakkımda</a>
                     <a href="/Projects" class="btn btn-outline-primary btn-lg">Projelerim</a>
@@ -19,7 +19,7 @@
             </div>
             <div class="col-lg-6 text-center mt-5 mt-lg-0">
                 <div class="profile-image-container mx-auto">
-                    <img src="/images/profile-placeholder.jpg" alt="Kamil Deniz" class="img-fluid">
+                    <img src="@Model.Profile?.ProfileImageUrl" alt="@Model.Profile?.FullName" class="img-fluid">
                 </div>
             </div>
         </div>

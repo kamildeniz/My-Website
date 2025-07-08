@@ -1,22 +1,40 @@
 @page "{slug}"
 @model PortfolioApp.Pages.Blog.DetailsModel
 @{
-    ViewData["Title"] = Model.BlogPost?.Title ?? "Blog Post";
-    ViewData["Description"] = Model.BlogPost?.Summary;
-    ViewData["Image"] = Model.BlogPost?.ImageUrl;
+    var isPostFound = Model.BlogPost != null;
+    ViewData["Title"] = isPostFound ? Model.BlogPost.Title : "Blog Post Not Found";
+    ViewData["Description"] = isPostFound ? Model.BlogPost.Summary : "The requested blog post could not be found.";
+    ViewData["Image"] = isPostFound ? Model.BlogPost.ImageUrl : null;
 }
 
-@if (Model.BlogPost == null)
+@if (!isPostFound)
 {
     <div class="container py-5">
         <div class="text-center">
             <h1 class="display-4">Post Not Found</h1>
             <p class="lead">The requested blog post could not be found.</p>
-            <a href="/blog" class="btn btn-primary mt-3">
-                <i class="bi bi-arrow-left me-1"></i> Back to Blog
-            </a>
+            
+            @if (!string.IsNullOrEmpty(HttpContext.Request.Path))
+            {
+                <div class="alert alert-warning mt-3 text-start">
+                    <p class="mb-1"><strong>Debug Information:</strong></p>
+                    <p class="mb-1">Requested Slug: @HttpContext.Request.RouteValues["slug"]</p>
+                    <p class="mb-1">Request Path: @HttpContext.Request.Path</p>
+                    <p class="mb-0">Status Code: @HttpContext.Response.StatusCode</p>
+                </div>
+            }
+            
+            <div class="mt-4">
+                <a href="/blog" class="btn btn-primary">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Blog
+                </a>
+                <a href="/" class="btn btn-outline-secondary ms-2">
+                    <i class="bi bi-house-door me-1"></i> Go to Home
+                </a>
+            </div>
         </div>
     </div>
+    return;
 }
 else
 {
