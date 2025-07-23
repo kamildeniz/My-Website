@@ -4,23 +4,55 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using PortfolioApp.Data;
+using PortfolioApp.Models;
 
 namespace PortfolioApp.Pages
 {
     public class ContactModel : PageModel
     {
         private readonly ILogger<ContactModel> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public ContactModel(ILogger<ContactModel> logger)
+        public ContactModel(ILogger<ContactModel> logger, ApplicationDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
+
+        public HomeContent? ContactContent { get; set; }
 
         [BindProperty]
         public ContactFormModel? ContactForm { get; set; }
 
-        public void OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
+            try
+            {
+                // Load contact content from database
+                ContactContent = await _context.HomeContents
+                    .FirstOrDefaultAsync(h => h.PageName == PageNames.Contact) ?? new HomeContent
+                    {
+                        PageName = PageNames.Contact,
+                        Title = "İletişime Geçin",
+                        Content = "Bana ulaşmak için aşağıdaki formu doldurabilir veya doğrudan iletişim bilgilerimden bana ulaşabilirsiniz.",
+                        MetaTitle = "İletişim"
+                    };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading contact content");
+                ContactContent = new HomeContent
+                {
+                    PageName = PageNames.Contact,
+                    Title = "İletişime Geçin",
+                    Content = "Bana ulaşmak için aşağıdaki formu doldurabilir veya doğrudan iletişim bilgilerimden bana ulaşabilirsiniz.",
+                    MetaTitle = "İletişim"
+                };
+            }
+            
+            return Page();
         }
 
         public IActionResult OnPost()

@@ -1,20 +1,26 @@
 @page
 @model PortfolioApp.Pages.ContactModel
 @{
-    ViewData["Title"] = "İletişim";
+    ViewData["Title"] = Model.ContactContent?.Title ?? "İletişim";
 }
 
-<!-- Page Header -->
-<section class="py-5 bg-light">
-    <div class="container py-4">
-        <div class="row">
-            <div class="col-lg-8 mx-auto text-center">
-                <h1 class="fw-bold">İletişime Geçin</h1>
-                <p class="lead text-muted">Bana ulaşmak için aşağıdaki formu doldurabilir veya doğrudan iletişim bilgilerimden bana ulaşabilirsiniz.</p>
+@if (Model.ContactContent != null)
+{
+    <!-- Page Header -->
+    <section class="py-5 bg-light">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h1 class="fw-bold">@(string.IsNullOrEmpty(Model.ContactContent.Title) ? "İletişime Geçin" : Model.ContactContent.Title)</h1>
+                    @if (!string.IsNullOrEmpty(Model.ContactContent.MetaDescription))
+                    {
+                        <p class="lead text-muted">@Model.ContactContent.MetaDescription</p>
+                    }
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+}
 
 <!-- Contact Form -->
 <section class="py-5">
