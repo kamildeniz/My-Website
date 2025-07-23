@@ -15,44 +15,45 @@
 
 <div class="row">
     <div class="col-md-12">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             
             <div class="mb-3">
-                <label asp-for="BlogPost.Title" class="form-label">Başlık</label>
-                <input asp-for="BlogPost.Title" class="form-control" />
-                <span asp-validation-for="BlogPost.Title" class="text-danger"></span>
+                <label asp-for="Input.Title" class="form-label">Başlık</label>
+                <input asp-for="Input.Title" class="form-control" />
+                <span asp-validation-for="Input.Title" class="text-danger"></span>
             </div>
             
             <div class="mb-3">
-                <label asp-for="BlogPost.Slug" class="form-label">URL Yolu (Boş bırakılırsa otomatik oluşturulur)</label>
-                <input asp-for="BlogPost.Slug" class="form-control" />
-                <span asp-validation-for="BlogPost.Slug" class="text-danger"></span>
+                <label asp-for="Input.Slug" class="form-label">URL Yolu (Boş bırakılırsa otomatik oluşturulur)</label>
+                <input asp-for="Input.Slug" class="form-control" />
+                <span asp-validation-for="Input.Slug" class="text-danger"></span>
             </div>
             
             <div class="mb-3">
-                <label asp-for="BlogPost.Excerpt" class="form-label">Özet</label>
-                <textarea asp-for="BlogPost.Excerpt" class="form-control" rows="3"></textarea>
-                <span asp-validation-for="BlogPost.Excerpt" class="text-danger"></span>
+                <label asp-for="Input.Summary" class="form-label">Özet</label>
+                <textarea asp-for="Input.Summary" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Input.Summary" class="text-danger"></span>
             </div>
             
             <div class="mb-3">
-                <label asp-for="BlogPost.Content" class="form-label">İçerik</label>
-                <textarea id="content-editor" asp-for="BlogPost.Content" class="form-control"></textarea>
-                <span asp-validation-for="BlogPost.Content" class="text-danger"></span>
+                <label asp-for="Input.Content" class="form-label">İçerik</label>
+                <textarea id="content-editor" asp-for="Input.Content" class="form-control"></textarea>
+                <span asp-validation-for="Input.Content" class="text-danger"></span>
             </div>
             
             <div class="mb-3">
-                <label asp-for="BlogPost.Tags" class="form-label">Etiketler (virgülle ayırın)</label>
-                <input asp-for="BlogPost.Tags" class="form-control" />
-                <span asp-validation-for="BlogPost.Tags" class="text-danger"></span>
+                <label asp-for="Input.FeaturedImageUrl" class="form-label">Öne Çıkan Görsel URL</label>
+                <input asp-for="Input.FeaturedImageUrl" class="form-control" />
+                <span asp-validation-for="Input.FeaturedImageUrl" class="text-danger"></span>
             </div>
             
             <div class="mb-3">
-                <div class="form-check">
-                    <input asp-for="BlogPost.IsPublished" class="form-check-input" />
-                    <label asp-for="BlogPost.IsPublished" class="form-check-label">Yayınla</label>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" asp-for="Input.IsPublished" />
+                    <label class="form-check-label" asp-for="Input.IsPublished">Yayınla</label>
                 </div>
+                <span asp-validation-for="Input.IsPublished" class="text-danger"></span>
             </div>
             
             <div class="mb-3">
@@ -81,9 +82,9 @@
             });
 
             // Generate slug from title
-            document.getElementById('BlogPost_Title').addEventListener('blur', function() {
+            document.getElementById('Input_Title').addEventListener('blur', function() {
                 const title = this.value;
-                const slugInput = document.getElementById('BlogPost_Slug');
+                const slugInput = document.getElementById('Input_Slug');
                 
                 if (!slugInput.value) {
                     const slug = title

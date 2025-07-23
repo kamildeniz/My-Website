@@ -1,51 +1,80 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using PortfolioApp.Data;
 using PortfolioApp.Models;
-using PortfolioApp.Services;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PortfolioApp.Pages.Admin
 {
-    public class DashboardModel : AdminPageModel
+    [Authorize(Roles = "Admin")]
+    public class DashboardModel : PageModel
     {
+        private readonly ILogger<DashboardModel> _logger;
         private readonly ApplicationDbContext _context;
-        private new readonly ILogger<DashboardModel> _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public int TotalBlogPosts { get; set; }
-        public int TotalProjects { get; set; }
-        public int PublishedPosts { get; set; }
-        public int TotalComments { get; set; }
-
-        public IList<BlogPost> RecentBlogPosts { get; set; } = new List<BlogPost>();
-        public IList<Project> RecentProjects { get; set; } = new List<Project>();
-
-        public DashboardModel(ApplicationDbContext context, AuthService authService, ILogger<DashboardModel> logger)
-            : base(authService, logger)
+        public DashboardModel(
+            ILogger<DashboardModel> logger, 
+            ApplicationDbContext context, 
+            UserManager<ApplicationUser> userManager)
         {
-            _context = context;
             _logger = logger;
+            _context = context;
+            _userManager = userManager;
         }
 
-        public async Task OnGetAsync()
+        public int TotalProjects { get; set; }
+        public int TotalBlogPosts { get; set; }
+        public int PublishedPosts { get; set; }
+        public string AdminName { get; set; }
+        public DateTime? LastLogin { get; set; }
+        
+        public List<BlogPost> RecentBlogPosts { get; set; } = new List<BlogPost>();
+        public List<Project> RecentProjects { get; set; } = new List<Project>();
+
+        public async Task<IActionResult> OnGetAsync()
         {
-            TotalBlogPosts = await _context.BlogPosts.CountAsync();
-            TotalProjects = await _context.Projects.CountAsync();
-            PublishedPosts = await _context.BlogPosts.CountAsync(p => p.IsPublished);
-            TotalComments = 0; // You can implement comments later
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return RedirectToPage("/Identity/Account/Login");
+                }
 
-            RecentBlogPosts = await _context.BlogPosts
-                .OrderByDescending(p => p.CreatedAt)
-                .Take(5)
-                .ToListAsync();
+                AdminName = user.UserName;
+                LastLogin = user.LastLoginAt;
 
-            RecentProjects = await _context.Projects
-                .OrderByDescending(p => p.CreatedAt)
-                .Take(5)
-                .ToListAsync();
+                TotalProjects = await _context.Projects.CountAsync();
+                TotalBlogPosts = await _context.BlogPosts.CountAsync();
+                PublishedPosts = await _context.BlogPosts.CountAsync(p => p.IsPublished);
+                
+                // Get recent blog posts
+                RecentBlogPosts = await _context.BlogPosts
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Take(5)
+                    .ToListAsync();
+                    
+                // Get recent projects
+                RecentProjects = await _context.Projects
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Take(5)
+                    .ToListAsync();
+
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while loading the dashboard");
+                TempData["ErrorMessage"] = "An error occurred while loading the dashboard. Please try again later.";
+                return RedirectToPage("/Identity/Account/Login");
+            }
         }
     }
 }

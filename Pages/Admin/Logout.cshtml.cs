@@ -1,61 +1,41 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using PortfolioApp.Services;
+using PortfolioApp.Models;
 
 namespace PortfolioApp.Pages.Admin
 {
-    [AllowAnonymous]
+    [Authorize]
     public class LogoutModel : PageModel
     {
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LogoutModel> _logger;
-        private readonly AuthService _authService;
 
-        public LogoutModel(ILogger<LogoutModel> logger, AuthService authService)
+        public LogoutModel(SignInManager<ApplicationUser> signInManager, ILogger<LogoutModel> logger)
         {
+            _signInManager = signInManager;
             _logger = logger;
-            _authService = authService;
         }
 
-        public async Task<IActionResult> OnGetAsync()
+        public void OnGet()
         {
-            // Sadece POST isteklerine izin ver
-            if (HttpContext.Request.Method != "POST")
+        }
+
+        public async Task<IActionResult> OnPost(string returnUrl = null)
+        {
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation("User logged out.");
+            
+            if (returnUrl != null)
             {
-                return Page();
+                return LocalRedirect(returnUrl);
             }
             
-            return await OnPostAsync();
-        }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            var userEmail = User.FindFirst(ClaimTypes.Email)?.Value ?? "Unknown";
-            _logger.LogInformation($"User {userEmail} is logging out.");
-
-            try
-            {
-                // Kullanıcıyı çıkış yaptır
-                await _authService.LogoutAsync();
-                _logger.LogInformation($"User {userEmail} has been logged out successfully.");
-
-                // Çıkış sonrası login sayfasına yönlendir
-                TempData["LogoutMessage"] = "Başarıyla çıkış yapıldı.";
-                return RedirectToPage("/Admin/Login");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error occurred during logout for user {userEmail}");
-                
-                // Hata durumunda da login sayfasına yönlendir
-                TempData["ErrorMessage"] = "Çıkış işlemi sırasında bir hata oluştu. Lütfen tekrar deneyiniz.";
-                return RedirectToPage("/Admin/Login");
-            }
+            // Redirect to home page after logout
+            return RedirectToPage("/Index");
         }
     }
 }

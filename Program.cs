@@ -1,372 +1,145 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
-using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using NLog.Web;
 using PortfolioApp.Data;
-using PortfolioApp.Data.Seeders;
-using PortfolioApp.Filters;
-using PortfolioApp.Middleware;
-using PortfolioApp.Options;
-using PortfolioApp.Services;
 using PortfolioApp.Models;
-using System;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text.Json;
+using PortfolioApp.Services;
+using NLog.Web;
+using NLog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// NLog: Setup NLog for Dependency injection
+// NLog setup
 builder.Logging.ClearProviders();
 builder.Host.UseNLog();
 
-var logger = NLog.LogManager.GetCurrentClassLogger();
-logger.Debug("init main");
+// Add services to the container.
+builder.Services.AddControllersWithViews();
 
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizeFolder("/Admin");
+    options.Conventions.AllowAnonymousToPage("/Identity/Account/Login");
+    options.Conventions.AllowAnonymousToPage("/Identity/Account/Register");
+    options.Conventions.AllowAnonymousToPage("/Error");
+});
+
+// Add database context with Identity
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Add Identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    // Password settings
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 8;
+    
+    // Lockout settings
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+    
+    // User settings
+    options.User.RequireUniqueEmail = true;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders()
+.AddDefaultUI();
+
+// Configure Identity cookies
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = builder.Configuration["Security:CookieName"] ?? ".AspNet.SharedCookie";
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(builder.Configuration.GetValue<int>("Security:SessionTimeoutInMinutes", 30));
+    options.LoginPath = "/Identity/Account/Login";
+    options.LogoutPath = "/Identity/Account/Logout";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.SlidingExpiration = true;
+    options.Cookie.SecurePolicy = builder.Configuration.GetValue<bool>("Security:RequireHttps", false)
+        ? CookieSecurePolicy.Always
+        : CookieSecurePolicy.None;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.IsEssential = true;
+});
+
+// Register application services
+builder.Services.AddScoped<ProfileService>();
+builder.Services.AddScoped<BlogService>();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
+else
+{
+    app.UseDeveloperExceptionPage();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapRazorPages();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Create default admin user and role on startup
 try
 {
-    builder.Services.AddRazorPages(options =>
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    
+    // Create database if it doesn't exist and apply migrations
+    context.Database.Migrate();
+    
+    // Create admin role if it doesn't exist
+    if (!await roleManager.RoleExistsAsync("Admin"))
     {
-        options.Conventions.AuthorizeFolder("/Admin");
-        options.Conventions.AllowAnonymousToPage("/Admin/Login");
-        options.Conventions.AllowAnonymousToPage("/Error");
-    });
-
-
-    builder.Services.AddDataProtection()
-        .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "DataProtection-Keys")))
-        .SetApplicationName("PortfolioApp");
-
-    builder.Services.AddMemoryCache();
-    builder.Services.AddHttpContextAccessor();
-    builder.Services.AddSession(options =>
-    {
-        options.IdleTimeout = TimeSpan.FromMinutes(builder.Configuration.GetValue<int>("Security:SessionTimeoutInMinutes", 30));
-        options.Cookie.Name = ".Portfolio.Session";
-        options.Cookie.HttpOnly = true;
-        options.Cookie.IsEssential = true;
-        options.Cookie.SecurePolicy = builder.Configuration.GetValue<bool>("Security:RequireHttps", false)
-            ? CookieSecurePolicy.Always
-            : CookieSecurePolicy.None;
-        options.Cookie.SameSite = SameSiteMode.Lax;
-    });
-
-    // Add database context
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-    builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-        .AddCookie(options =>
-        {
-            options.Cookie.Name = builder.Configuration["Security:CookieName"] ?? ".AspNet.SharedCookie";
-            options.Cookie.HttpOnly = true;
-            options.Cookie.SecurePolicy = builder.Configuration.GetValue<bool>("Security:RequireHttps", false)
-                ? CookieSecurePolicy.Always
-                : CookieSecurePolicy.None;
-            options.Cookie.SameSite = SameSiteMode.Lax;
-            options.Cookie.IsEssential = true;
-            options.Cookie.MaxAge = TimeSpan.FromMinutes(builder.Configuration.GetValue<int>("Security:SessionTimeoutInMinutes", 30));
-            options.LoginPath = "/Admin/Login";
-            options.LogoutPath = "/Admin/Logout";
-            options.AccessDeniedPath = "/Error?statusCode=403";
-            options.ReturnUrlParameter = "returnUrl";
-            options.ExpireTimeSpan = TimeSpan.FromMinutes(builder.Configuration.GetValue<int>("Security:SessionTimeoutInMinutes", 30));
-            options.SlidingExpiration = true;
-            options.ClaimsIssuer = "PortfolioApp";
-            options.Events = new CookieAuthenticationEvents
-            {
-                OnSigningIn = context =>
-                {
-                    Console.WriteLine($"User {context.Principal?.Identity?.Name ?? "[unknown]"} is signing in.");
-                    return Task.CompletedTask;
-                },
-                OnSignedIn = context =>
-                {
-                    Console.WriteLine($"User {context.Principal?.Identity?.Name ?? "[unknown]"} has successfully signed in.");
-                    return Task.CompletedTask;
-                },
-                OnRedirectToLogin = context =>
-                {
-                    if (context.Request.Path.StartsWithSegments("/api") ||
-                        context.Request.ContentType?.ToLower().Contains("application/json") == true)
-                    {
-                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        return Task.CompletedTask;
-                    }
-                    context.Response.Redirect(context.RedirectUri);
-                    return Task.CompletedTask;
-                },
-                OnRedirectToAccessDenied = context =>
-                {
-                    if (context.Request.Path.StartsWithSegments("/api") ||
-                        context.Request.ContentType?.ToLower().Contains("application/json") == true)
-                    {
-                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                        return Task.CompletedTask;
-                    }
-                    context.Response.Redirect(context.RedirectUri);
-                    return Task.CompletedTask;
-                }
-            };
-        });
-
-    builder.Services.AddAuthorization();
-    builder.Services.AddHealthChecks()
-        .AddCheck<PortfolioApp.Services.HealthCheckService>("self", tags: new[] { "ready" })
-        .AddCheck("live", () => HealthCheckResult.Healthy("Application is live"), tags: new[] { "live" });
-
-    builder.Services.Configure<RequestTimingOptions>(builder.Configuration.GetSection("RequestTiming"));
-    builder.Services.Configure<RateLimitingOptions>(builder.Configuration.GetSection("RateLimiting"));
-    builder.Services.AddScoped<AuthService>();
-    builder.Services.AddScoped<PortfolioApp.Services.HealthCheckService>();
-    builder.Services.AddScoped<BlogService>();
-    builder.Services.AddScoped<ProfileService>();
-    builder.Services.AddControllers().AddApplicationPart(Assembly.GetExecutingAssembly());
-
-    builder.Configuration
-        .SetBasePath(builder.Environment.ContentRootPath)
-        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-        .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-        .AddEnvironmentVariables();
-
-    var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
-    if (corsOrigins.Length > 0)
-    {
-        builder.Services.AddCors(options =>
-        {
-            options.AddDefaultPolicy(policy =>
-            {
-                policy.WithOrigins(corsOrigins)
-                      .AllowAnyHeader()
-                      .AllowAnyMethod()
-                      .AllowCredentials();
-            });
-        });
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
     }
-
-    builder.Services.AddHttpContextAccessor();
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-    builder.Services.Configure<JsonSerializerOptions>(options =>
+    
+    // Create default admin user if it doesn't exist
+    var adminEmail = "admin@example.com";
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
     {
-        options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-        options.WriteIndented = true;
-    });
-    builder.Services.AddSingleton<HealthCheckJsonFormatter>();
-    builder.Services.Configure<RateLimitingOptions>(options =>
-    {
-        options.Enabled = true;
-        options.RequestLimit = 100;
-        options.WindowInSeconds = 60;
-        options.WhitelistedPaths = new[] { "/health", "/healthz", "/_framework", "/_blazor", "/favicon.ico" };
-    });
-
-    var app = builder.Build();
-
-    using (var scope = app.Services.CreateScope())
-    {
-        var services = scope.ServiceProvider;
-        try
+        adminUser = new ApplicationUser
         {
-            DatabaseSeeder.Initialize(services);
-        }
-        catch (Exception ex)
+            UserName = adminEmail,
+            Email = adminEmail,
+            EmailConfirmed = true
+        };
+        
+        var result = await userManager.CreateAsync(adminUser, "Admin@123");
+        if (result.Succeeded)
         {
-            var scopeLogger = services.GetRequiredService<ILogger<Program>>();
-            scopeLogger.LogError(ex, "An error occurred while seeding the database.");
+            await userManager.AddToRoleAsync(adminUser, "Admin");
         }
     }
-
-    app.UseExceptionHandler(errorApp =>
-    {
-        errorApp.Run(async context =>
-        {
-            var exceptionHandlerPathFeature = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
-            var exception = exceptionHandlerPathFeature?.Error;
-            var errorLogger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-            errorLogger.LogError(exception, "Global exception caught: {Message}", exception?.Message);
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            context.Response.ContentType = "text/html";
-            var errorPath = $"/Error?statusCode={context.Response.StatusCode}";
-            if (exception is UnauthorizedAccessException)
-            {
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                errorPath = "/Error?statusCode=401";
-            }
-            context.Response.Redirect(errorPath);
-        });
-    });
-
-    app.UseStatusCodePagesWithReExecute("/Error", "?statusCode={0}");
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseDeveloperExceptionPage();
-    }
-    else
-    {
-        app.UseHsts();
-    }
-
-    app.Use(async (context, next) =>
-    {
-        context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
-        context.Response.Headers.Append("X-Frame-Options", "SAMEORIGIN");
-        context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
-        context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
-        context.Response.Headers.Append("Content-Security-Policy",
-            "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: https:; font-src 'self' https://cdn.jsdelivr.net; connect-src 'self'; frame-ancestors 'self';");
-        await next();
-    });
-
-    app.UseForwardedHeaders(new ForwardedHeadersOptions
-    {
-        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-    });
-
-    app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
-
-    app.UseHttpsRedirection();
-    app.UseStaticFiles();
-
-    app.UseRouting();
-
-    app.UseMiddleware<RequestTimingMiddleware>();
-    app.UseMiddleware<RequestLoggingMiddleware>();
-    app.UseMiddleware<RateLimitingMiddleware>();
-
-    app.UseSession();
-
-    app.UseAuthentication();
-    app.UseAuthorization();
-
-    // app.UseStatusCodePages(async context =>
-    // {
-    //     var response = context.HttpContext.Response;
-    //     var request = context.HttpContext.Request;
-    //     var statusCodeLogger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-
-    //     if (response.StatusCode == (int)HttpStatusCode.Unauthorized)
-    //     {
-    //         statusCodeLogger.LogWarning("Unauthorized access to {Path}", request.Path);
-    //         response.Redirect($"/Admin/Login?returnUrl={Uri.EscapeDataString(request.Path + request.QueryString)}");
-    //         return;
-    //     }
-    //     if (response.StatusCode >= 400)
-    //     {
-    //         statusCodeLogger.LogWarning("Error {StatusCode} occurred for {Path}", response.StatusCode, request.Path);
-    //         response.Redirect($"/Error?statusCode={response.StatusCode}");
-    //     }
-    // });
-
-
-
-    app.MapControllers();
-    app.MapRazorPages();
-
-    // Initialize the database
-    using (var scope = app.Services.CreateScope())
-    {
-        var services = scope.ServiceProvider;
-        try
-        {
-            var context = services.GetRequiredService<ApplicationDbContext>();
-            // This will create the database if it doesn't exist and apply any pending migrations
-            context.Database.EnsureCreated();
-            
-            // You can also use this if you prefer to explicitly apply migrations:
-            // context.Database.Migrate();
-            
-            logger.Info("Database initialized successfully");
-        }
-        catch (Exception ex)
-        {
-            logger.Error(ex, "An error occurred while initializing the database");
-        }
-    }
-
-    app.MapHealthChecks("/health", new HealthCheckOptions
-    {
-        Predicate = _ => true,
-        AllowCachingResponses = false,
-        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-    });
-    app.MapHealthChecks("/health/ready", new HealthCheckOptions
-    {
-        Predicate = (check) => check.Tags.Contains("ready"),
-        AllowCachingResponses = false,
-        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-    });
-    app.MapHealthChecks("/health/live", new HealthCheckOptions
-    {
-        Predicate = (check) => check.Tags.Contains("live"),
-        AllowCachingResponses = false,
-        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-    });
-
-    app.MapGet("/health", () => Results.Ok(new { status = "Healthy", timestamp = DateTime.UtcNow }));
-    app.MapGet("/favicon.ico", async context =>
-    {
-        context.Response.StatusCode = 404;
-        await context.Response.CompleteAsync();
-    });
-
-    using (var scope = app.Services.CreateScope())
-    {
-        var services = scope.ServiceProvider;
-        try
-        {
-            var context = services.GetRequiredService<ApplicationDbContext>();
-            context.Database.Migrate();
-            var blogService = services.GetRequiredService<BlogService>();
-            await blogService.ProcessMarkdownFilesAsync();
-        }
-        catch (Exception ex)
-        {
-            var initLogger = services.GetRequiredService<ILogger<Program>>();
-            initLogger.LogError(ex, "An error occurred while initializing the database or processing markdown files.");
-        }
-    }
-
-    app.MapGet("/generatehash", (string password) =>
-    {
-        var (hash, salt) = HashPassword(password);
-        return Results.Ok(new { Hash = hash, Salt = salt });
-    });
-
-    static (string hash, string salt) HashPassword(string password)
-    {
-        byte[] salt = new byte[16];
-        using var rng = RandomNumberGenerator.Create();
-        rng.GetBytes(salt);
-        using var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100000, HashAlgorithmName.SHA256);
-        byte[] hash = pbkdf2.GetBytes(32);
-        return (Convert.ToBase64String(hash), Convert.ToBase64String(salt));
-    }
-
-    app.Run();
 }
-catch (Exception exception)
+catch (Exception ex)
 {
-    logger.Error(exception, "Stopped program because of exception");
-    throw;
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "An error occurred while creating the admin user or role.");
 }
-finally
-{
-    NLog.LogManager.Shutdown();
-}
+
+app.Run();

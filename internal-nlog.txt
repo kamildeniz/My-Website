@@ -345,3 +345,291 @@
 2025-07-09 02:35:11.3315 Info Shutdown() called. Logger closing...
 2025-07-09 02:35:11.3315 Info Closing old configuration.
 2025-07-09 02:35:11.3315 Info Logger has been closed down.
+2025-07-09 03:46:04.1100 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 03:46:04.1200 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 03:46:04.1200 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 03:46:04.1290 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 03:46:04.1290 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 03:46:04.1290 Info Configuration initialized.
+2025-07-09 03:46:04.1989 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 03:48:08.3758 Info Shutdown() called. Logger closing...
+2025-07-09 03:48:08.3758 Info Closing old configuration.
+2025-07-09 03:48:08.3758 Info Logger has been closed down.
+2025-07-09 03:48:21.6115 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 03:48:21.6115 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 03:48:21.6266 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 03:48:21.6266 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 03:48:21.6266 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 03:48:21.6266 Info Configuration initialized.
+2025-07-09 03:48:21.6782 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 03:48:21.6918 Info Shutdown() called. Logger closing...
+2025-07-09 03:48:21.6918 Info Closing old configuration.
+2025-07-09 03:48:21.6918 Info Logger has been closed down.
+2025-07-09 03:48:32.7837 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 03:48:32.7837 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 03:48:32.7837 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 03:48:32.7837 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 03:48:32.7982 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 03:48:32.7982 Info Configuration initialized.
+2025-07-09 03:48:32.8532 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 03:48:32.8636 Info Shutdown() called. Logger closing...
+2025-07-09 03:48:32.8636 Info Closing old configuration.
+2025-07-09 03:48:32.8789 Info Logger has been closed down.
+2025-07-09 04:01:37.8684 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 04:01:37.8684 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 04:01:37.8785 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 04:01:37.8785 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 04:01:37.8785 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 04:01:37.8785 Info Configuration initialized.
+2025-07-09 04:01:37.9476 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 04:04:16.2514 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 04:04:16.2514 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 04:04:16.2514 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 04:04:16.2514 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 04:04:16.2514 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 04:04:16.2737 Info Configuration initialized.
+2025-07-09 04:04:16.2737 Warn FileTarget(Name=logfile): Failed to create file appender: C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\/Logs/logfile.txt Exception: System.IO.IOException: The process cannot access the file 'C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\Logs\logfile.txt' because it is being used by another process.
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize)
+   at NLog.Internal.FileAppenders.BaseFileAppender.TryCreateFileStream(Boolean allowFileSharedWriting, Int32 overrideBufferSize)
+   at NLog.Internal.FileAppenders.BaseFileAppender.TryCreateDirectoryFileStream(Boolean allowFileSharedWriting, Int32 overrideBufferSize)
+   at NLog.Internal.FileAppenders.BaseFileAppender.CreateFileStream(Boolean allowFileSharedWriting, Int32 overrideBufferSize)
+   at NLog.Internal.FileAppenders.SingleProcessFileAppender..ctor(String fileName, ICreateFileParameters parameters)
+   at NLog.Internal.FileAppenders.SingleProcessFileAppender.Factory.NLog.Internal.FileAppenders.IFileAppenderFactory.Open(String fileName, ICreateFileParameters parameters)
+   at NLog.Internal.FileAppenders.FileAppenderCache.CreateAppender(String fileName, Int32 freeSpot)
+2025-07-09 04:04:28.0168 Info Shutdown() called. Logger closing...
+2025-07-09 04:04:28.0168 Info Closing old configuration.
+2025-07-09 04:04:28.0168 Info Logger has been closed down.
+2025-07-09 04:04:39.0091 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 04:04:39.0091 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 04:04:39.0186 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 04:04:39.0186 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 04:04:39.0186 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 04:04:39.0186 Info Configuration initialized.
+2025-07-09 04:04:39.0884 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 04:15:34.0266 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 04:15:34.0328 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 04:15:34.0328 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 04:15:34.0328 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 04:15:34.0474 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 04:15:34.0474 Info Configuration initialized.
+2025-07-09 04:15:34.1151 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 04:46:56.0390 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 04:46:56.0390 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 04:46:56.0390 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 04:46:56.0390 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 04:46:56.0390 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 04:46:56.0581 Info Configuration initialized.
+2025-07-09 04:46:56.1132 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 04:50:25.8146 Info Shutdown() called. Logger closing...
+2025-07-09 04:50:25.8146 Info Closing old configuration.
+2025-07-09 04:50:25.8307 Info Logger has been closed down.
+2025-07-09 04:50:36.5819 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 04:50:36.5819 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 04:50:36.5819 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 04:50:36.5819 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 04:50:36.5971 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 04:50:36.5971 Info Configuration initialized.
+2025-07-09 04:50:36.6790 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 05:24:11.3303 Info Shutdown() called. Logger closing...
+2025-07-09 05:24:11.3303 Info Closing old configuration.
+2025-07-09 05:24:11.3303 Info Logger has been closed down.
+2025-07-09 05:46:41.7985 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 05:46:41.7985 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 05:46:41.7985 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 05:46:41.7985 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 05:46:41.7985 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 05:46:41.8175 Info Configuration initialized.
+2025-07-09 05:46:41.8175 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 05:47:17.7034 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 05:47:17.7034 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 05:47:17.7034 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 05:47:17.7034 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 05:47:17.7034 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 05:47:17.7230 Info Configuration initialized.
+2025-07-09 05:47:17.7230 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 05:49:28.0884 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 05:49:28.0947 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 05:49:28.0947 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 05:49:28.0947 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 05:49:28.0947 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 05:49:28.1182 Info Configuration initialized.
+2025-07-09 05:49:28.1182 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 05:51:13.3974 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 05:51:13.3974 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 05:51:13.4063 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 05:51:13.4063 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 05:51:13.4063 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 05:51:13.4063 Info Configuration initialized.
+2025-07-09 05:51:13.4063 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 05:51:35.9327 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 05:51:35.9327 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 05:51:35.9428 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 05:51:35.9428 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 05:51:35.9428 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 05:51:35.9428 Info Configuration initialized.
+2025-07-09 05:51:35.9536 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 05:53:31.6016 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 05:53:31.6101 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 05:53:31.6101 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 05:53:31.6101 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 05:53:31.6279 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 05:53:31.6279 Info Configuration initialized.
+2025-07-09 05:53:31.6279 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 05:54:20.0972 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 05:54:20.1146 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 05:54:20.1278 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 05:54:20.1278 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 05:54:20.1278 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 05:54:20.1540 Info Configuration initialized.
+2025-07-09 05:54:20.1540 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 06:08:48.6413 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 06:08:48.6413 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 06:08:48.6413 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 06:08:48.6413 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 06:08:48.6413 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 06:08:48.6615 Info Configuration initialized.
+2025-07-09 06:08:48.6615 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 15:14:38.0971 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 15:14:38.0971 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 15:14:38.1164 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 15:14:38.1164 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 15:14:38.1164 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 15:14:38.1282 Info Configuration initialized.
+2025-07-09 15:14:38.1282 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 15:26:00.6451 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 15:26:00.6451 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 15:26:00.6451 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 15:26:00.6563 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 15:26:00.6563 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 15:26:00.6563 Info Configuration initialized.
+2025-07-09 15:26:00.6563 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 15:34:53.5207 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 15:34:53.5350 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 15:34:53.5350 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 15:34:53.5350 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 15:34:53.5350 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 15:34:53.5568 Info Configuration initialized.
+2025-07-09 15:34:53.5568 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 15:37:38.7571 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-09 15:37:38.7571 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-09 15:37:38.7660 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-09 15:37:38.7660 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-09 15:37:38.7660 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-09 15:37:38.7660 Info Configuration initialized.
+2025-07-09 15:37:38.7660 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-11 05:39:16.9258 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-11 05:39:16.9874 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-11 05:39:16.9977 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-11 05:39:16.9977 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-11 05:39:16.9977 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-11 05:39:17.0303 Info Configuration initialized.
+2025-07-11 05:39:17.0303 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-14 14:11:47.5455 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-14 14:11:47.5455 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-14 14:11:47.5633 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-14 14:11:47.5633 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-14 14:11:47.5633 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-14 14:11:47.5791 Info Configuration initialized.
+2025-07-14 14:11:47.5791 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-21 16:51:42.0467 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-21 16:51:42.0467 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-21 16:51:42.0564 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-21 16:51:42.0564 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-21 16:51:42.0564 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-21 16:51:42.0564 Info Configuration initialized.
+2025-07-21 16:51:42.0564 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 11:03:26.4686 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-22 11:03:26.4686 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-22 11:03:26.4791 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-22 11:03:26.4791 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-22 11:03:26.4791 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 11:03:26.4791 Info Configuration initialized.
+2025-07-22 11:03:26.4791 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 11:30:36.7744 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-22 11:30:36.7906 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-22 11:30:36.7906 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-22 11:30:36.7906 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-22 11:30:36.7906 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 11:30:36.8155 Info Configuration initialized.
+2025-07-22 11:30:36.8155 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 14:37:41.2936 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-22 14:37:41.2936 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-22 14:37:41.2936 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-22 14:37:41.3070 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-22 14:37:41.3070 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 14:37:41.3070 Info Configuration initialized.
+2025-07-22 14:37:41.3070 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 14:56:04.2330 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-22 14:56:04.2483 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-22 14:56:04.2633 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-22 14:56:04.2633 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-22 14:56:04.2850 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 14:56:04.3125 Info Configuration initialized.
+2025-07-22 14:56:04.3125 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 15:12:32.4348 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-22 15:12:32.4478 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-22 15:12:32.4478 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-22 15:12:32.4478 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-22 15:12:32.4679 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 15:12:32.4782 Info Configuration initialized.
+2025-07-22 15:12:32.4782 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 15:41:22.4037 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-22 15:41:22.4220 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-22 15:41:22.4396 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-22 15:41:22.4396 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-22 15:41:22.4396 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 15:41:22.4698 Info Configuration initialized.
+2025-07-22 15:41:22.4698 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 20:01:36.5522 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-22 20:01:36.5652 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-22 20:01:36.5768 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-22 20:01:36.5768 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-22 20:01:36.5768 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 20:01:36.5768 Info Configuration initialized.
+2025-07-22 20:01:36.5768 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 20:06:26.4499 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-22 20:06:26.4499 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-22 20:06:26.4696 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-22 20:06:26.4696 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-22 20:06:26.4696 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 20:06:26.4833 Info Configuration initialized.
+2025-07-22 20:06:26.4833 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 20:12:59.7487 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-22 20:12:59.7607 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-22 20:12:59.7737 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-22 20:12:59.7737 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-22 20:12:59.7737 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 20:12:59.7737 Info Configuration initialized.
+2025-07-22 20:12:59.7737 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 20:13:44.2734 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-22 20:13:44.2851 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-22 20:13:44.2981 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-22 20:13:44.2981 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-22 20:13:44.3084 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 20:13:44.3084 Info Configuration initialized.
+2025-07-22 20:13:44.3084 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 20:38:51.6095 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-22 20:38:51.6095 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-22 20:38:51.6352 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-22 20:38:51.6352 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-22 20:38:51.6352 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 20:38:51.6490 Info Configuration initialized.
+2025-07-22 20:38:51.6490 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 20:41:00.4654 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-22 20:41:00.4654 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-22 20:41:00.4889 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-22 20:41:00.4889 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-22 20:41:00.4964 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-22 20:41:00.4964 Info Configuration initialized.
+2025-07-22 20:41:00.4964 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-23 12:15:27.2903 Info Registered target NLog.Targets.FileTarget(Name=logfile)
+2025-07-23 12:15:27.2903 Info Registered target NLog.Targets.ConsoleTarget(Name=logconsole)
+2025-07-23 12:15:27.2903 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.2.8.2366. Product version: 5.2.8+f586f1341c46fa38aaaff4c641e7f0fa7e813943. GlobalAssemblyCache: False
+2025-07-23 12:15:27.3094 Info LogManager.ThrowExceptions = true can crash the application! Use only for unit-testing and last resort troubleshooting.
+2025-07-23 12:15:27.3094 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config
+2025-07-23 12:15:27.3094 Info Configuration initialized.
+2025-07-23 12:15:27.3094 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=25, FilePath=C:\Users\Asus\Desktop\projeler\c#\kisisel\My-Website\bin\Debug\net8.0\NLog.config

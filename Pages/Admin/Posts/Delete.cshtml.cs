@@ -1,28 +1,35 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using PortfolioApp.Data;
 using PortfolioApp.Models;
-using PortfolioApp.Services;
 
 namespace PortfolioApp.Pages.Admin.Posts
 {
-    public class DeleteModel : AdminPageModel
+    [Authorize(Roles = "Admin")]
+    public class DeleteModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private new readonly ILogger<DeleteModel> _logger;
+        private readonly ILogger<DeleteModel> _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public DeleteModel(ApplicationDbContext context, AuthService authService, ILogger<DeleteModel> logger)
-            : base(authService, logger)
+        public DeleteModel(
+            ApplicationDbContext context, 
+            ILogger<DeleteModel> logger,
+            UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _logger = logger;
+            _userManager = userManager;
         }
 
         [BindProperty]
-        public BlogPost? BlogPost { get; set; }
+        public BlogPost BlogPost { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -31,13 +38,15 @@ namespace PortfolioApp.Pages.Admin.Posts
                 return NotFound();
             }
 
-            BlogPost = await _context.BlogPosts.FirstOrDefaultAsync(m => m.Id == id);
+            BlogPost = await _context.BlogPosts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (BlogPost == null)
             {
                 return NotFound();
             }
-            
+
             return Page();
         }
 
@@ -48,13 +57,20 @@ namespace PortfolioApp.Pages.Admin.Posts
                 return NotFound();
             }
 
-            var blogPost = await _context.BlogPosts.FindAsync(id);
-
-            if (blogPost != null)
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
             {
-                BlogPost = blogPost;
+                return Unauthorized();
+            }
+
+            BlogPost = await _context.BlogPosts.FindAsync(id);
+
+            if (BlogPost != null)
+            {
                 _context.BlogPosts.Remove(BlogPost);
                 await _context.SaveChangesAsync();
+                _logger.LogInformation("Blog post deleted: {PostId} - {Title} by {UserId}", 
+                    BlogPost.Id, BlogPost.Title, user.Id);
             }
 
             return RedirectToPage("./Index");

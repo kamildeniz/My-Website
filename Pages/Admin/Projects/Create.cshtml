@@ -19,40 +19,40 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             
             <div class="mb-3">
-                <label asp-for="Project.Title" class="form-label">Proje Başlığı</label>
-                <input asp-for="Project.Title" class="form-control" />
-                <span asp-validation-for="Project.Title" class="text-danger"></span>
+                <label asp-for="Input.Title" class="form-label">Proje Başlığı</label>
+                <input asp-for="Input.Title" class="form-control" />
+                <span asp-validation-for="Input.Title" class="text-danger"></span>
             </div>
             
             <div class="mb-3">
-                <label asp-for="Project.Description" class="form-label">Açıklama</label>
-                <textarea asp-for="Project.Description" class="form-control" rows="3"></textarea>
-                <span asp-validation-for="Project.Description" class="text-danger"></span>
+                <label asp-for="Input.Description" class="form-label">Açıklama</label>
+                <textarea asp-for="Input.Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Input.Description" class="text-danger"></span>
             </div>
             
             <div class="mb-3">
-                <label asp-for="ImageFile" class="form-label">Proje Görseli</label>
-                <input type="file" asp-for="ImageFile" class="form-control" accept="image/*" />
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                <label asp-for="Input.ImageFile" class="form-label">Proje Görseli</label>
+                <input type="file" asp-for="Input.ImageFile" class="form-control" accept="image/*" />
+                <span asp-validation-for="Input.ImageFile" class="text-danger"></span>
                 <div class="form-text">Önerilen boyut: 800x600 piksel</div>
             </div>
             
             <div class="mb-3">
-                <label asp-for="Project.GitHubUrl" class="form-label">GitHub URL</label>
-                <input asp-for="Project.GitHubUrl" class="form-control" />
-                <span asp-validation-for="Project.GitHubUrl" class="text-danger"></span>
+                <label asp-for="Input.GitHubUrl" class="form-label">GitHub URL</label>
+                <input asp-for="Input.GitHubUrl" class="form-control" />
+                <span asp-validation-for="Input.GitHubUrl" class="text-danger"></span>
             </div>
             
             <div class="mb-3">
-                <label asp-for="Project.LiveUrl" class="form-label">Canlı Demo URL (İsteğe Bağlı)</label>
-                <input asp-for="Project.LiveUrl" class="form-control" />
-                <span asp-validation-for="Project.LiveUrl" class="text-danger"></span>
+                <label asp-for="Input.LiveUrl" class="form-label">Canlı Demo URL (İsteğe Bağlı)</label>
+                <input asp-for="Input.LiveUrl" class="form-control" />
+                <span asp-validation-for="Input.LiveUrl" class="text-danger"></span>
             </div>
             
             <div class="mb-3">
-                <label asp-for="Project.Technologies" class="form-label">Kullanılan Teknolojiler (virgülle ayırın)</label>
-                <input asp-for="Project.Technologies" class="form-control" placeholder="Örn: C#, .NET Core, React, SQL Server" />
-                <span asp-validation-for="Project.Technologies" class="text-danger"></span>
+                <label asp-for="Input.Technologies" class="form-label">Kullanılan Teknolojiler (virgülle ayırın)</label>
+                <input asp-for="Input.Technologies" class="form-control" placeholder="Örn: C#, .NET Core, React, SQL Server" />
+                <span asp-validation-for="Input.Technologies" class="text-danger"></span>
             </div>
             
             <div class="mb-3">

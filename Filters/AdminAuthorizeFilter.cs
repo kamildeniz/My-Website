@@ -1,42 +1,43 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
-using PortfolioApp.Services;
-using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace PortfolioApp.Filters
 {
-    public class AdminAuthorizeFilter : IAsyncPageFilter
+    public class AdminAuthorizeFilter : IAsyncAuthorizationFilter
     {
-        private readonly AuthService _authService;
+        private readonly ILogger<AdminAuthorizeFilter> _logger;
+        private readonly IAuthorizationService _authorizationService;
 
-        public AdminAuthorizeFilter(AuthService authService)
+        public AdminAuthorizeFilter(ILogger<AdminAuthorizeFilter> logger, IAuthorizationService authorizationService)
         {
-            _authService = authService;
+            _logger = logger;
+            _authorizationService = authorizationService;
         }
 
-        public async Task OnPageHandlerExecutionAsync(PageHandlerExecutingContext context, PageHandlerExecutionDelegate next)
+        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            // Skip authorization for Login page
-            if (context.ActionDescriptor.RelativePath.Contains("Login"))
+            var user = context.HttpContext.User;
+            
+            if (user == null || !user.Identity.IsAuthenticated)
             {
-                await next();
+                _logger.LogWarning("Yetkisiz erişim girişimi: Kullanıcı giriş yapmamış");
+                context.Result = new RedirectToPageResult("/Identity/Account/Login", 
+                    new { returnUrl = context.HttpContext.Request.Path });
                 return;
             }
 
-            var isAuthenticated = await _authService.IsAuthenticatedAsync();
-            if (!isAuthenticated)
+            var isAuthorized = await _authorizationService.AuthorizeAsync(user, "AdminPolicy");
+            if (!isAuthorized.Succeeded)
             {
-                context.Result = new RedirectToPageResult("/Admin/Login", new { returnUrl = context.HttpContext.Request.Path });
-                return;
+                _logger.LogWarning("Yetkisiz erişim girişimi: Kullanıcı admin değil");
+                context.Result = new ForbidResult();
             }
-
-            await next();
-        }
-
-        public Task OnPageHandlerSelectionAsync(PageHandlerSelectedContext context)
-        {
-            return Task.CompletedTask;
         }
     }
 }

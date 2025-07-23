@@ -4,29 +4,78 @@
     ViewData["Title"] = "Ana Sayfa";
 }
 
-<!-- Hero Section -->
-<section class="hero-section py-5">
-    <div class="container py-5">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h1 class="display-4 fw-bold mb-3">Merhaba, Ben <span class="text-primary">@Model.Profile?.FullName</span></h1>
-                <p class="lead mb-4">@Model.Profile?.Title</p>
-                <p class="mb-4">@Model.Profile?.Description</p>
-                <div class="d-flex gap-3">
-                    <a href="/About" class="btn btn-primary btn-lg">Hakkımda</a>
-                    <a href="/Projects" class="btn btn-outline-primary btn-lg">Projelerim</a>
+@if (Model.HomeContent != null)
+{
+    <section class="hero-section py-5">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    @if (!string.IsNullOrEmpty(Model.HomeContent.Title))
+                    {
+                        <h1 class="display-4 fw-bold mb-4">@Html.Raw(Model.HomeContent.Title)</h1>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.HomeContent.Content))
+                    {
+                        <div class="mb-4">
+                            @Html.Raw(Model.HomeContent.Content)
+                        </div>
+                    }
+
+                    <div class="d-flex gap-3 mt-4">
+                        @if (!string.IsNullOrEmpty(Model.HomeContent.ButtonText) && !string.IsNullOrEmpty(Model.HomeContent.ButtonUrl))
+                        {
+                            <a href="@Model.HomeContent.ButtonUrl" class="btn btn-primary btn-lg">
+                                @Model.HomeContent.ButtonText
+                            </a>
+                        }
+                        <a href="/Projects" class="btn btn-outline-primary btn-lg">Projelerimi İncele</a>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-6 text-center mt-5 mt-lg-0">
-                <div class="profile-image-container mx-auto">
-                    <img src="@Model.Profile?.ProfileImageUrl" alt="@Model.Profile?.FullName" class="img-fluid">
-                </div>
+
+                @if (!string.IsNullOrEmpty(Model.HomeContent.ImageUrl))
+                {
+                    <div class="col-lg-6 text-center mt-5 mt-lg-0">
+                        <div class="hero-image-container">
+                            <img src="@Model.HomeContent.ImageUrl"
+                                 alt="@(Model.Profile?.FullName ?? "Profil Resmi")"
+                                 class="img-fluid rounded shadow"
+                                 style="max-height: 500px; width: auto;">
+                        </div>
+                    </div>
+                }
             </div>
         </div>
-    </div>
-</section>
+    </section>
+}
+else
+{
+    <!-- Fallback content if HomeContent is not found -->
+    <section class="hero-section py-5">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-3">Merhaba, Ben <span class="text-primary">@Model.Profile?.FullName</span></h1>
+                    <p class="lead mb-4">@Model.Profile?.Title</p>
+                    <p class="mb-4">@Model.Profile?.Description</p>
+                    <div class="d-flex gap-3">
+                        <a href="/About" class="btn btn-primary btn-lg">Hakkımda</a>
+                        <a href="/Projects" class="btn btn-outline-primary btn-lg">Projelerim</a>
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Profile?.ProfileImageUrl))
+                {
+                    <div class="col-lg-6 text-center mt-5 mt-lg-0">
+                        <div class="profile-image-container mx-auto">
+                            <img src="@Model.Profile.ProfileImageUrl" alt="@Model.Profile.FullName" class="img-fluid">
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
 
-<!-- Skills Section -->
 <section class="py-5">
     <div class="container">
         <div class="text-center mb-5">
@@ -79,22 +128,55 @@
             <p class="text-muted">Yakın zamanda tamamladığım çalışmalardan örnekler</p>
             <a href="/Projects" class="btn btn-outline-primary mt-2">Tüm Projeleri Gör</a>
         </div>
-        <!-- Projects will be loaded here dynamically -->
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="projects-container">
-            <div class="col">
-                <div class="card h-100 border-0 shadow-sm">
-                    <img src="https://via.placeholder.com/400x250" class="card-img-top" alt="Proje 1">
-                    <div class="card-body">
-                        <h5 class="card-title">Proje Başlığı</h5>
-                        <p class="card-text text-muted">Proje açıklaması buraya gelecek. Kısa ve öz bir açıklama yazılabilir.</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <a href="#" class="btn btn-sm btn-outline-primary">Detaylar</a>
-                            <small class="text-muted">Haziran 2025</small>
+            @foreach (var project in Model.Projects)
+            {
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm project-card">
+                        @if (!string.IsNullOrEmpty(project.ImageUrl))
+                        {
+                            <img src="@project.ImageUrl" class="card-img-top project-image" alt="@project.Title" style="height: 200px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <img src="/images/project-placeholder.jpg" class="card-img-top project-image" alt="@project.Title" style="height: 200px; object-fit: cover;">
+                        }
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title mb-0">@project.Title</h5>
+                                @if (!string.IsNullOrEmpty(project.GitHubUrl))
+                                {
+                                    <a href="@project.GitHubUrl" target="_blank" class="text-dark">
+                                        <i class="bi bi-github fs-5"></i>
+                                    </a>
+                                }
+                            </div>
+                            <p class="card-text text-muted">@(project.Description?.Length > 150 ? project.Description.Substring(0, 150) + "..." : project.Description)</p>
+                            @if (project.Technologies != null && project.Technologies.Any())
+                            {
+                                <div class="mb-3">
+                                    @foreach (var tech in project.Technologies.Take(3))
+                                    {
+                                        <a href="#" class="text-decoration-none me-2 mb-2">
+                                            <span class="tech-badge">@tech</span>
+                                        </a>
+                                    }
+                                    @if (project.Technologies.Count > 3)
+                                    {
+                                        <span class="badge bg-light text-dark">+@(project.Technologies.Count - 3) daha</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">@project.CreatedAt.ToString("MMMM yyyy")</small>
+                                <a asp-page="/Projects/Details" asp-route-id="@project.Id" class="btn btn-sm btn-outline-primary">Detayları Gör</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- More project cards will be added dynamically -->
+            }
         </div>
     </div>
 </section>
@@ -107,23 +189,60 @@
             <p class="text-muted">Teknoloji ve yazılım dünyasından güncel paylaşımlar</p>
             <a href="/Blog" class="btn btn-outline-primary mt-2">Tüm Yazıları Oku</a>
         </div>
-        <!-- Blog posts will be loaded here dynamically -->
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="blog-posts-container">
             <div class="col">
-                <div class="card h-100 border-0 shadow-sm">
-                    <img src="https://via.placeholder.com/400x250" class="card-img-top" alt="Blog Post 1">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="badge bg-primary">Teknoloji</span>
-                            <small class="text-muted">10 Haziran 2025</small>
+                @foreach (var post in Model.BlogPosts)
+                {
+                    <article class="card border-0 shadow-sm mb-5">
+                        @if (!string.IsNullOrEmpty(post.ImageUrl))
+                        {
+                            <img src="@post.ImageUrl" class="card-img-top" alt="@post.Title">
+                        }
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="text-muted me-3">
+                                    <i class="bi bi-calendar3 me-1"></i> @post.CreatedAt.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("tr-TR"))
+                                </span>
+                                @if (post.Tags != null && post.Tags.Any())
+                                {
+                                    <span class="text-muted">
+                                        <i class="bi bi-tag me-1"></i>
+                                        @string.Join(", ", post.Tags.Take(2))
+                                        @if (post.Tags.Count > 2)
+                                        {
+                                            <span>+@(post.Tags.Count - 2) daha</span>
+                                        }
+                                    </span>
+                                }
+                            </div>
+                            <h2 class="h4 mb-3">
+                                <a asp-page="/Blog/Details" asp-route-slug="@post.Slug" class="text-decoration-none text-dark">
+                                    @post.Title
+                                </a>
+                            </h2>
+                            <p class="card-text">
+                                @if (!string.IsNullOrEmpty(post.Summary))
+                                {
+                                    @post.Summary
+                                }
+                                else if (!string.IsNullOrEmpty(post.Content))
+                                {
+                                    var plainText = System.Text.RegularExpressions.Regex.Replace(post.Content, "<[^>]*>", string.Empty);
+                                    var preview = plainText.Length > 200 ? plainText.Substring(0, 200) + "..." : plainText;
+                                    @preview
+                                }
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center mt-4">
+                                <a asp-page="/Blog/Details" asp-route-slug="@post.Slug" class="btn btn-outline-primary">
+                                    Devamını Oku <i class="bi bi-arrow-right ms-2"></i>
+                                </a>
+
+                            </div>
                         </div>
-                        <h5 class="card-title">Blog Yazı Başlığı</h5>
-                        <p class="card-text text-muted">Blog yazısının kısa bir özeti burada yer alacak. İlk birkaç cümle gösterilebilir.</p>
-                        <a href="#" class="stretched-link">Devamını oku</a>
-                    </div>
-                </div>
+                    </article>
+                }
+
             </div>
-            <!-- More blog post cards will be added dynamically -->
         </div>
     </div>
 </section>
@@ -149,6 +268,7 @@
         .hero-section {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         }
+
         .profile-image-container {
             width: 300px;
             height: 300px;
@@ -156,15 +276,26 @@
             border: 5px solid #fff;
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
         }
+
         .card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
-        }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+            }
+
         .icon-box {
             margin: 0 auto;
         }
     </style>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Home page loaded successfully');
+        });
+    </script>
 }

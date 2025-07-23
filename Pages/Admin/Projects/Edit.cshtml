@@ -1,11 +1,11 @@
 @page "{id:int}"
 @model PortfolioApp.Pages.Admin.Projects.EditModel
 @{
-    ViewData["Title"] = "Projeyi Düzenle: " + Model.Project.Title;
+    ViewData["Title"] = "Projeyi Düzenle: " + Model.Input.Title;
 }
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-    <h1 class="h2">Projeyi Düzenle: @Model.Project.Title</h1>
+    <h1 class="h2">Projeyi Düzenle: @Model.Input.Title</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
         <a asp-page="Index" class="btn btn-sm btn-outline-secondary">
             <i class="bi bi-arrow-left"></i> Listeye Dön
@@ -16,55 +16,56 @@
 <div class="row">
     <div class="col-md-8">
         <form method="post" enctype="multipart/form-data">
-            <input type="hidden" asp-for="Project.Id" />
-            <input type="hidden" asp-for="Project.CreatedAt" />
-            <input type="hidden" asp-for="Project.ImageUrl" />
+            <input type="hidden" asp-for="Input.Id" />
+            <input type="hidden" asp-for="Input.ImageUrl" />
             
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             
             <div class="mb-3">
-                <label asp-for="Project.Title" class="form-label">Proje Başlığı</label>
-                <input asp-for="Project.Title" class="form-control" />
-                <span asp-validation-for="Project.Title" class="text-danger"></span>
+                <label asp-for="Input.Title" class="form-label">Proje Başlığı</label>
+                <input asp-for="Input.Title" class="form-control" />
+                <span asp-validation-for="Input.Title" class="text-danger"></span>
             </div>
             
             <div class="mb-3">
-                <label asp-for="Project.Description" class="form-label">Açıklama</label>
-                <textarea asp-for="Project.Description" class="form-control" rows="3"></textarea>
-                <span asp-validation-for="Project.Description" class="text-danger"></span>
+                <label asp-for="Input.Description" class="form-label">Açıklama</label>
+                <textarea asp-for="Input.Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Input.Description" class="text-danger"></span>
             </div>
             
             <div class="mb-3">
                 <label class="form-label">Mevcut Görsel</label>
-                @if (!string.IsNullOrEmpty(Model.Project.ImageUrl))
+                @if (!string.IsNullOrEmpty(Model.Input.ImageUrl))
                 {
                     <div class="mb-2">
-                        <img src="@Model.Project.ImageUrl" alt="@Model.Project.Title" class="img-thumbnail" style="max-width: 200px;" />
+                        <img src="@Model.Input.ImageUrl" alt="@Model.Input.Title" class="img-thumbnail" style="max-width: 200px;" />
                     </div>
                 }
-                <label asp-for="ImageFile" class="form-label">Yeni Görsel (Değiştirmek için seçin)</label>
-                <input type="file" asp-for="ImageFile" class="form-control" accept="image/*" />
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                <label asp-for="Input.ImageFile" class="form-label">Yeni Görsel (Değiştirmek için seçin)</label>
+                <input type="file" asp-for="Input.ImageFile" class="form-control" accept="image/*" />
+                <span asp-validation-for="Input.ImageFile" class="text-danger"></span>
                 <div class="form-text">Boş bırakılırsa mevcut görsel korunacaktır.</div>
             </div>
             
             <div class="mb-3">
-                <label asp-for="Project.GitHubUrl" class="form-label">GitHub URL</label>
-                <input asp-for="Project.GitHubUrl" class="form-control" />
-                <span asp-validation-for="Project.GitHubUrl" class="text-danger"></span>
+                <label asp-for="Input.GitHubUrl" class="form-label">GitHub URL</label>
+                <input asp-for="Input.GitHubUrl" class="form-control" />
+                <span asp-validation-for="Input.GitHubUrl" class="text-danger"></span>
             </div>
             
             <div class="mb-3">
-                <label asp-for="Project.LiveUrl" class="form-label">Canlı Demo URL (İsteğe Bağlı)</label>
-                <input asp-for="Project.LiveUrl" class="form-control" />
-                <span asp-validation-for="Project.LiveUrl" class="text-danger"></span>
+                <label asp-for="Input.LiveUrl" class="form-label">Canlı Demo URL (İsteğe Bağlı)</label>
+                <input asp-for="Input.LiveUrl" class="form-control" />
+                <span asp-validation-for="Input.LiveUrl" class="text-danger"></span>
             </div>
             
             <div class="mb-3">
-                <label asp-for="Project.Technologies" class="form-label">Kullanılan Teknolojiler (virgülle ayırın)</label>
-                <input asp-for="Project.Technologies" class="form-control" placeholder="Örn: C#, .NET Core, React, SQL Server" />
-                <span asp-validation-for="Project.Technologies" class="text-danger"></span>
+                <label asp-for="Input.Technologies" class="form-label">Teknolojiler (virgülle ayırın)</label>
+                <input asp-for="Input.Technologies" class="form-control" />
+                <span asp-validation-for="Input.Technologies" class="text-danger"></span>
             </div>
+            
+
             
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">
@@ -81,7 +82,7 @@
                 <h5 class="card-title mb-0">İstatistikler</h5>
             </div>
             <div class="card-body">
-                <p class="mb-1"><strong>Oluşturulma:</strong> @Model.Project.CreatedAt.ToString("dd.MM.yyyy HH:mm")</p>
+                <p class="mb-1"><strong>Oluşturulma:</strong> @DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm")</p>
             </div>
         </div>
         
@@ -90,10 +91,10 @@
                 <h5 class="card-title mb-0">Hızlı İşlemler</h5>
             </div>
             <div class="card-body">
-                <a href="/projects/details/@Model.Project.Id" class="btn btn-outline-primary btn-sm w-100 mb-2" target="_blank">
+                <a href="/projects/details/@Model.Input.Id" class="btn btn-outline-primary btn-sm w-100 mb-2" target="_blank">
                     <i class="bi bi-eye"></i> Önizleme
                 </a>
-                <form method="post" asp-page-handler="Delete" asp-route-id="@Model.Project.Id" 
+                <form method="post" asp-page="Delete" asp-route-id="@Model.Input.Id" 
                       onsubmit="return confirm('Bu projeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.');">
                     <button type="submit" class="btn btn-outline-danger btn-sm w-100">
                         <i class="bi bi-trash"></i> Sil

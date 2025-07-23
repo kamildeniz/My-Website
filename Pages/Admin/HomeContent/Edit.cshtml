@@ -1,0 +1,86 @@
+@page "{id:int}"
+@model PortfolioApp.Pages.Admin.HomeContent.EditModel
+@{
+    ViewData["Title"] = "İçerik Düzenle: " + Model.HomeContent.PageName;
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">@Model.HomeContent.PageName İçeriğini Düzenle</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">İçerik Bilgileri</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="HomeContent.Id" />
+                        <input type="hidden" asp-for="HomeContent.PageName" />
+                        
+                        <div class="form-group">
+                            <label asp-for="HomeContent.Title" class="control-label">Başlık</label>
+                            <input asp-for="HomeContent.Title" class="form-control" />
+                            <span asp-validation-for="HomeContent.Title" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="HomeContent.Content" class="control-label">İçerik</label>
+                            <textarea asp-for="HomeContent.Content" class="form-control" id="editor" rows="10"></textarea>
+                            <span asp-validation-for="HomeContent.Content" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="ImageFile" class="control-label">Resim (Değiştirmek istemiyorsanız boş bırakın)</label>
+                            <input type="file" asp-for="ImageFile" class="form-control-file" accept="image/*" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                            @if (!string.IsNullOrEmpty(Model.HomeContent.ImageUrl))
+                            {
+                                <div class="mt-2">
+                                    <img src="@Model.HomeContent.ImageUrl" alt="@Model.HomeContent.Title" class="img-thumbnail" style="max-width: 200px;" />
+                                    <input type="hidden" asp-for="HomeContent.ImageUrl" />
+                                </div>
+                            }
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="HomeContent.ButtonText" class="control-label">Buton Metni (İsteğe Bağlı)</label>
+                            <input asp-for="HomeContent.ButtonText" class="form-control" />
+                            <span asp-validation-for="HomeContent.ButtonText" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label asp-for="HomeContent.ButtonUrl" class="control-label">Buton Linki (İsteğe Bağlı)</label>
+                            <input asp-for="HomeContent.ButtonUrl" class="form-control" />
+                            <span asp-validation-for="HomeContent.ButtonUrl" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Kaydet
+                            </button>
+                            <a asp-page="./Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Listeye Dön
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'))
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+}

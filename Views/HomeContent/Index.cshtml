@@ -1,0 +1,53 @@
+@model IEnumerable<PortfolioApp.Models.HomeContent>
+
+@{
+    ViewData["Title"] = "Sayfa İçerikleri";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">@ViewData["Title"]</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/admin">Yönetim Paneli</a></li>
+        <li class="breadcrumb-item active">Sayfa İçerikleri</li>
+    </ol>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Sayfa İçerikleri
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Sayfa Adı</th>
+                        <th>Son Güncelleme</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.PageName</td>
+                            <td>@item.LastUpdated.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>
+                                <a href="@Url.Action("Edit", new { pageName = item.PageName })" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-edit"></i> Düzenle
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -40,12 +40,20 @@ namespace PortfolioApp.Pages
         {
             try
             {
-                // Get the status code from the query string or the response
-                StatusCode = statusCode ?? HttpContext.Response.StatusCode;
+                // Get the status code from the query string, route data or the response
+                StatusCode = statusCode ?? 
+                    (HttpContext.Response.StatusCode != 200 ? HttpContext.Response.StatusCode : 500);
                 
                 // Get the exception details if available
                 var exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+                var statusCodeReExecuteFeature = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
                 var exception = exceptionHandlerPathFeature?.Error;
+
+                // If we have a status code re-execute feature, we can get the original path
+                if (statusCodeReExecuteFeature != null)
+                {
+                    Path = statusCodeReExecuteFeature.OriginalPath;
+                }
 
                 if (exception != null)
                 {
